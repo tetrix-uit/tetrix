@@ -1,12 +1,20 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
-  # Git hooks. prek installs the shims when you enter the devenv shell. The generated
-  # .pre-commit-config.yaml is in .gitignore. The convco hook runs at the commit-msg stage and
+  # Git hooks. prek installs the shims when you enter the devenv shell. devenv generates
+  # .pre-commit-config.yaml and copies it into the repository, so a developer without devenv can
+  # run the same hooks with prek. The convco hook runs at the commit-msg stage and
   # rejects a commit message that does not follow Conventional Commits.
   git-hooks = {
     package = pkgs.prek;
-    hooks.convco.enable = true;
+    hooks.convco = {
+      enable = true;
+      # Portable entry: uses convco from PATH instead of a Nix store path, so the committed
+      # .pre-commit-config.yaml also works on a machine without Nix.
+      entry = "sh -c 'convco check --from-stdin < \"$1\"' convco-hook";
+    };
   };
+
+  files.".pre-commit-config.yaml".copyMode = lib.mkForce "copy";
 
   factory = {
     domain = {
