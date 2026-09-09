@@ -1,0 +1,24 @@
+name: Log fork
+
+on: fork
+
+permissions: {}
+
+jobs:
+  log:
+    name: Log fork information
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Show fork information
+        env:
+          FORKED_BY: ${{ github.actor }}
+          FORK_REPOSITORY: ${{ github.event.forkee.full_name }}
+          FORK_URL: ${{ github.event.forkee.html_url }}
+          FORK_CREATED_AT: ${{ github.event.forkee.created_at }}
+        run: |
+          printf '%s\n' "Forked by: $FORKED_BY"
+          printf '%s\n' "Fork repository: $FORK_REPOSITORY"
+          printf '%s\n' "Fork URL: $FORK_URL"
+          printf '%s\n' "Created at: $FORK_CREATED_AT"
