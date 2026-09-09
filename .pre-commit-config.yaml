@@ -28,6 +28,28 @@
           ],
           "types_or": [],
           "verbose": false
+        },
+        {
+          "always_run": false,
+          "args": [],
+          "entry": "markdownlint --config .markdownlint.yaml",
+          "exclude": "(^docs/.*/templates/|^CLAUDE\\.md$|^\\.(agents|claude|codex|opencode)/)",
+          "exclude_types": [],
+          "fail_fast": false,
+          "files": "\\.md$",
+          "id": "markdownlint",
+          "language": "system",
+          "name": "markdownlint",
+          "pass_filenames": true,
+          "require_serial": false,
+          "stages": [
+            "pre-commit"
+          ],
+          "types": [
+            "file"
+          ],
+          "types_or": [],
+          "verbose": false
         }
       ],
       "repo": "local"

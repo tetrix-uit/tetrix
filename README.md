@@ -13,20 +13,27 @@ deployment configuration. The project also has one shared end-to-end test reposi
 - `e2e/` contains the shared end-to-end tests.
 - `docs/` contains the shared project knowledge and the governance documents.
 
-## Commit messages
+## Git hooks
 
-Write each commit message in the Conventional Commits format: `type(scope): subject`. The scope
-is optional. A `commit-msg` git hook rejects a commit message that does not follow the format.
-The hook runs with [prek](https://prek.j178.dev) and checks the message with
-[convco](https://convco.github.io).
+Two git hooks run with [prek](https://prek.j178.dev):
 
-The hook configuration is `.pre-commit-config.yaml`. devenv generates this file from `devenv.nix`
-and copies it into the repository. Do not edit the file by hand. Change `devenv.nix` and enter the
-devenv shell again to regenerate it.
+- The `commit-msg` hook checks the commit message with [convco](https://convco.github.io). Write
+  each commit message in the Conventional Commits format: `type(scope): subject`. The scope is
+  optional. The hook rejects a commit message that does not follow the format.
+- The `pre-commit` hook checks the staged markdown files with
+  [markdownlint](https://github.com/igorshubovych/markdownlint-cli). The rules are in
+  `.markdownlint.yaml`: lines wrap at 100 columns, and inline HTML is allowed. The hook skips the
+  templates in `docs/`, the `CLAUDE.md` include stub, and the agent harness directories that
+  devenv generates.
+
+The hook configuration is `.pre-commit-config.yaml`. devenv generates this file and
+`.markdownlint.yaml` from `devenv.nix` and copies them into the repository. Do not edit these
+files by hand. Change `devenv.nix` and enter the devenv shell again to regenerate them.
 
 ### Set up the hooks with devenv
 
-Enter the devenv shell. The shell installs `prek` and `convco`, and installs the git hooks.
+Enter the devenv shell. The shell installs `prek`, `convco`, and `markdownlint`, and installs the
+git hooks.
 
 ```bash
 devenv shell
@@ -51,7 +58,15 @@ devenv shell
    brew install convco
    ```
 
-3. Install the git hooks from the repository root.
+3. Install `markdownlint-cli` and make sure that `markdownlint` is on your `PATH`. Use one of
+   these commands.
+
+   ```bash
+   npm install --global markdownlint-cli
+   brew install markdownlint-cli
+   ```
+
+4. Install the git hooks from the repository root.
 
    ```bash
    prek install

@@ -12,9 +12,41 @@
       # .pre-commit-config.yaml also works on a machine without Nix.
       entry = "sh -c 'convco check --from-stdin < \"$1\"' convco-hook";
     };
+    # The markdownlint hook runs at the pre-commit stage and checks the staged markdown files
+    # against .markdownlint.yaml. It skips the templates in docs/, the CLAUDE.md include stub,
+    # and the agent harness files that the factory generates.
+    hooks.markdownlint = {
+      enable = true;
+      # Portable entry: uses markdownlint from PATH and the committed .markdownlint.yaml, so the
+      # committed .pre-commit-config.yaml also works on a machine without Nix.
+      entry = "markdownlint --config .markdownlint.yaml";
+      excludes = [
+        "^docs/.*/templates/"
+        "^CLAUDE\\.md$"
+        "^\\.(agents|claude|codex|opencode)/"
+      ];
+    };
   };
 
   files.".pre-commit-config.yaml".copyMode = lib.mkForce "copy";
+
+  # markdownlint rules. devenv generates .markdownlint.yaml from this attribute set and copies it
+  # into the repository, so the hook reads the same rules with or without devenv.
+  files.".markdownlint.yaml" = {
+    copyMode = "copy";
+    yaml = {
+      default = true;
+      # The documents wrap at 100 columns. Code blocks and tables can be wider.
+      MD013 = {
+        line_length = 100;
+        code_blocks = false;
+        tables = false;
+      };
+      # The templates use <angle brackets> for placeholders, and a seeded document keeps them
+      # until it is filled in.
+      MD033 = false;
+    };
+  };
 
   factory = {
     domain = {
