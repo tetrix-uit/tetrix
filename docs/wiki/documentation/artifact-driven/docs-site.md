@@ -3,7 +3,7 @@
 The documentation site is a website that renders the `docs/` tree of the repository. The factory
 renders the site project at `apps/documentation/`. The project sets the options
 `factory.composition.artifact-driven.docs-site` in `devenv.local.nix`: `enable`, `title`, `url`,
-and `base-url`. The shell renders the site project from these options.
+`base-url`, and `notification`. The shell renders the site project from these options.
 
 ## Run locally
 
@@ -28,6 +28,44 @@ under Pages, set the source to "GitHub Actions". Do this step one time.
 
 A push to another branch does not change the published website. A failed build does not change
 the published website. The Actions tab shows the failed run.
+
+## Set up deployment notifications
+
+The workflow can send one message after GitHub Pages deploys the site. Select Google Chat or Slack
+in `devenv.local.nix`:
+
+```nix
+factory.composition.artifact-driven.docs-site.notification = {
+  provider = "google-chat"; # Or "slack".
+  webhook-secret = "DOCS_SITE_NOTIFICATION_WEBHOOK";
+};
+```
+
+The default provider is `"unset"`. This value generates no notifier or notification step.
+
+Make an incoming webhook for the Google Chat space or Slack channel. Use the provider procedure:
+
+- [Google Chat incoming webhooks](https://developers.google.com/workspace/chat/quickstart/webhooks)
+- [Slack incoming webhooks](https://api.slack.com/messaging/webhooks)
+
+Treat the webhook URL as a password. Store it in the GitHub Actions repository secret that the
+`webhook-secret` option names:
+
+```bash
+read -rsp "Notification webhook: " DOCS_SITE_NOTIFICATION_WEBHOOK
+printf '\n'
+printf '%s' "$DOCS_SITE_NOTIFICATION_WEBHOOK" \
+  | gh secret set DOCS_SITE_NOTIFICATION_WEBHOOK
+unset DOCS_SITE_NOTIFICATION_WEBHOOK
+```
+
+The message identifies the repository, the deployed URL, the source revision, and the workflow
+run. The workflow sends a message after a successful push or manual deployment. It sends no message
+after a failed build or deployment.
+
+The notifier retries a temporary delivery failure two times. If all attempts fail, the workflow
+reports a failure, but GitHub Pages keeps the deployed site. A workflow rerun can send the message
+again.
 
 ## Write pages that render
 

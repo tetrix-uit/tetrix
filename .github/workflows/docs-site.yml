@@ -46,6 +46,7 @@ jobs:
     permissions:
       pages: write
       id-token: write
+      contents: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -53,3 +54,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Check out the notification code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Notify the team about the deployment
+        run: python3 .github/docs-site/notify.py
+        env:
+          DOCS_SITE_NOTIFICATION_PROVIDER: slack
+          DOCS_SITE_NOTIFICATION_WEBHOOK: ${{ secrets.DOCS_SITE_NOTIFICATION_WEBHOOK }}
+          DOCS_SITE_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
+          DOCS_SITE_REPOSITORY: ${{ github.repository }}
+          DOCS_SITE_REF_NAME: ${{ github.ref_name }}
+          DOCS_SITE_COMMIT_SHA: ${{ github.sha }}
+          DOCS_SITE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

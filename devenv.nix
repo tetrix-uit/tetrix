@@ -51,6 +51,10 @@
         enable = true;
         url = "https://tetrix-uit.github.io";
         base-url = "/tetrix/";
+        notification = {
+          provider = "slack";
+          webhook-secret = "DOCS_SITE_NOTIFICATION_WEBHOOK";
+        };
       };
       project-issues = {
         enable = true;
