@@ -13,6 +13,12 @@ deployment configuration. The project also has one shared end-to-end test reposi
 - `e2e/` contains the shared end-to-end tests.
 - `docs/` contains the shared project knowledge and the governance documents.
 
+## Commit messages
+
+Write each commit message in the Conventional Commits format: `type(scope): subject`. The scope
+is optional. Enter the devenv shell before you commit. The shell installs a `commit-msg` git hook
+with `prek`. The hook rejects a commit message that does not follow the format.
+
 ## Read more
 
 - [Multiple Repositories Architecture](docs/wiki/repo-arch/multiple-repositories.md).

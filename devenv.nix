@@ -1,4 +1,13 @@
+{ pkgs, ... }:
 {
+  # Git hooks. prek installs the shims when you enter the devenv shell. The generated
+  # .pre-commit-config.yaml is in .gitignore. The convco hook runs at the commit-msg stage and
+  # rejects a commit message that does not follow Conventional Commits.
+  git-hooks = {
+    package = pkgs.prek;
+    hooks.convco.enable = true;
+  };
+
   factory = {
     domain = {
       documentation.use = "artifact-driven";
