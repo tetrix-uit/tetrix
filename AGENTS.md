@@ -16,3 +16,8 @@ Keep the requirements, the specifications, the decisions, and the tasks of each 
 Keep the domain model in `docs/domain/`. One bounded context is one directory in `services/`.
 Update the domain artifacts in the phase that owns them: the strategic design in phase 1, the
 tactical design in phase 2.
+
+## Commit Conventions
+
+Never add "Co-Authored-By" lines to commits. Do not include this attribution in
+commit messages, PR descriptions, or any git metadata.
