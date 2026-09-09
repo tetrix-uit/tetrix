@@ -75,6 +75,11 @@
   };
 
   factory = {
+    composition.artifact-driven.docs-site = {
+      enable = true;
+      url = "https://tetrix-uit.github.io";
+      base-url = "/tetrix/";
+    };
     domain = {
       documentation.use = "artifact-driven";
       repo-arch.use = "multiple";
