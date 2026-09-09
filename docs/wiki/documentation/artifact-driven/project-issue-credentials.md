@@ -114,9 +114,9 @@ generated workflow reads repository secrets with these default names.
 
 10. Remove the local variables.
 
-    ```bash
-    unset TRELLO_API_KEY TRELLO_TOKEN
-    ```
+   ```bash
+   unset TRELLO_API_KEY TRELLO_TOKEN
+   ```
 
 ## Set up an acceptance notification
 
