@@ -24,7 +24,9 @@ applications, services, libraries, or deployment can have many experts.
   expert whose domain covers it. Give the expert the requirements and the constraints.
 - Merge the result of each expert into the artifacts of the feature.
 - You keep the master specification, the final decision, and the order of the tasks.
-- If no expert covers a domain, write the part yourself. Say so in your report.
+- When no expert covers a domain, tell the user that the `expert-role` skill can set up an
+  implementation expert for it. Offer to set up the expert. If the user declines, write the
+  part yourself. Say so in your report.
 
 ## Procedure: phase 2, specifications
 
