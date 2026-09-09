@@ -26,6 +26,16 @@
         "^\\.(agents|claude|codex|opencode)/"
       ];
     };
+    # The ripsecrets hook runs at the pre-commit stage and scans the staged text files for
+    # secrets: API keys, access tokens, and private keys. It rejects the commit when it finds one.
+    # A false positive can be allowed with a `# pragma: allowlist secret` comment on the line, or
+    # with a path in a .secretsignore file.
+    hooks.ripsecrets = {
+      enable = true;
+      # Portable entry: uses ripsecrets from PATH instead of a Nix store path, so the committed
+      # .pre-commit-config.yaml also works on a machine without Nix.
+      entry = "ripsecrets --strict-ignore";
+    };
   };
 
   files.".pre-commit-config.yaml".copyMode = lib.mkForce "copy";

@@ -50,6 +50,28 @@
           ],
           "types_or": [],
           "verbose": false
+        },
+        {
+          "always_run": false,
+          "args": [],
+          "entry": "ripsecrets --strict-ignore",
+          "exclude": "^$",
+          "exclude_types": [],
+          "fail_fast": false,
+          "files": "",
+          "id": "ripsecrets",
+          "language": "system",
+          "name": "ripsecrets",
+          "pass_filenames": true,
+          "require_serial": false,
+          "stages": [
+            "pre-commit"
+          ],
+          "types": [
+            "text"
+          ],
+          "types_or": [],
+          "verbose": false
         }
       ],
       "repo": "local"
