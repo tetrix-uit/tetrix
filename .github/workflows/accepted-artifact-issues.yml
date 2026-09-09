@@ -30,12 +30,12 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
-                ARTIFACT_ISSUES_RESULT: ${{ runner.temp }}/accepted-artifacts.json
+          ARTIFACT_ISSUES_RESULT: ${{ runner.temp }}/accepted-artifacts.json
 
-            - name: Notify the team about accepted artifacts
-              if: github.event_name == 'pull_request_target'
-              run: python3 .github/artifact-issues/notify.py
-              env:
-                ARTIFACT_ISSUES_RESULT: ${{ runner.temp }}/accepted-artifacts.json
-                ARTIFACT_NOTIFICATION_PROVIDER: slack
-                ARTIFACT_NOTIFICATION_WEBHOOK: ${{ secrets.ARTIFACT_NOTIFICATION_WEBHOOK }}
+      - name: Notify the team about accepted artifacts
+        if: github.event_name == 'pull_request_target'
+        run: python3 .github/artifact-issues/notify.py
+        env:
+          ARTIFACT_ISSUES_RESULT: ${{ runner.temp }}/accepted-artifacts.json
+          ARTIFACT_NOTIFICATION_PROVIDER: slack
+          ARTIFACT_NOTIFICATION_WEBHOOK: ${{ secrets.ARTIFACT_NOTIFICATION_WEBHOOK }}
