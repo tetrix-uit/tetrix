@@ -1,0 +1,7 @@
+[agents.requirement-expert]
+config_file = "agents/requirement-expert.toml"
+description = "Gathers the business need and writes the requirements of a feature. Owns phase 1 of the artifact-driven documentation model. Use when a new feature starts, or when the requirements of a feature change."
+
+[agents.solution-expert]
+config_file = "agents/solution-expert.toml"
+description = "Designs the solution for a feature and writes the specifications, the decisions, and the implementation plan. Owns phases 2 and 3 of the artifact-driven documentation model. Works with the implementation expert of each component that the solution touches."

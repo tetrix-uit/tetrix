@@ -8,9 +8,3 @@ devenv.local.yaml
 
 # pre-commit
 .pre-commit-config.yaml
-
-# Harness
-.agents
-.claude
-.codex
-.opencode
