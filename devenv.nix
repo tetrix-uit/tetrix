@@ -36,6 +36,22 @@
       # .pre-commit-config.yaml also works on a machine without Nix.
       entry = "ripsecrets --strict-ignore";
     };
+    # The gitleaks hook runs at the pre-commit stage and scans the staged diff with the gitleaks
+    # rule set: about 150 provider rules (AWS, Anthropic, OpenAI, Azure, DigitalOcean, ...) plus
+    # entropy checks. It fills the gaps of ripsecrets, which has no AWS rule. The output redacts
+    # the secret value. A false positive can be allowed with a `gitleaks:allow` comment on the
+    # line, or with a fingerprint in a .gitleaksignore file.
+    hooks.gitleaks = {
+      enable = true;
+      name = "gitleaks";
+      description = "Scan the staged diff for secrets with gitleaks";
+      package = pkgs.gitleaks;
+      # Portable entry: uses gitleaks from PATH instead of a Nix store path, so the committed
+      # .pre-commit-config.yaml also works on a machine without Nix.
+      entry = "gitleaks git --pre-commit --staged --redact --no-banner --verbose";
+      # gitleaks reads the staged diff from git itself, so it does not take the file list.
+      pass_filenames = false;
+    };
   };
 
   files.".pre-commit-config.yaml".copyMode = lib.mkForce "copy";

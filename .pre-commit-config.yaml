@@ -32,6 +32,28 @@
         {
           "always_run": false,
           "args": [],
+          "entry": "gitleaks git --pre-commit --staged --redact --no-banner --verbose",
+          "exclude": "^$",
+          "exclude_types": [],
+          "fail_fast": false,
+          "files": "",
+          "id": "gitleaks",
+          "language": "system",
+          "name": "gitleaks",
+          "pass_filenames": false,
+          "require_serial": false,
+          "stages": [
+            "pre-commit"
+          ],
+          "types": [
+            "file"
+          ],
+          "types_or": [],
+          "verbose": false
+        },
+        {
+          "always_run": false,
+          "args": [],
           "entry": "markdownlint --config .markdownlint.yaml",
           "exclude": "(^docs/.*/templates/|^CLAUDE\\.md$|^\\.(agents|claude|codex|opencode)/)",
           "exclude_types": [],
