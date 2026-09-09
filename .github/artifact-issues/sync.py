@@ -546,6 +546,7 @@ class Synchronizer:
             fail(f"Unsupported provider: {config['provider']}")
         self.refs: dict[str, IssueRef] = {}
         self.results: list[tuple[str, str]] = []
+        self.notification_results: list[dict[str, str]] = []
 
     def make_body(self, artifact: Artifact, parent: IssueRef | None = None) -> str:
         return artifact_body(
@@ -645,18 +646,47 @@ class Synchronizer:
         ]
         if not relevant:
             print("No accepted feature artifacts need synchronization")
+            self.write_result()
             return
         self.adapter.preflight(self.statuses)
         for item in sorted(relevant, key=lambda value: value["filename"].count("/")):
             status = item["status"]
+            ref = None
             if status == "removed":
-                self.withdraw_path(item["filename"])
+                ref = self.withdraw_path(item["filename"])
             elif status == "renamed":
-                self.sync_path(item["filename"], item.get("previous_filename", ""))
+                ref = self.sync_path(item["filename"], item.get("previous_filename", ""))
             else:
-                self.sync_path(item["filename"])
+                ref = self.sync_path(item["filename"])
+            if ref is not None:
+                change = {
+                    "added": "added",
+                    "renamed": "renamed",
+                    "removed": "withdrawn",
+                }.get(status, "updated")
+                result = {"change": change, "path": item["filename"], "url": ref.url}
+                if change == "renamed":
+                    result["previousPath"] = item.get("previous_filename", "")
+                self.notification_results.append(result)
         if self.pull_request_url and self.results:
             self.comment_on_pull_request()
+        self.write_result()
+
+    def write_result(self) -> None:
+        output = os.environ.get("ARTIFACT_ISSUES_RESULT", "")
+        if not output:
+            return
+        pull_request = self.event.get("pull_request") or {}
+        result = {
+            "repository": self.repository,
+            "pullRequest": {
+                "number": pull_request.get("number", 0),
+                "title": pull_request.get("title", ""),
+                "url": pull_request.get("html_url", ""),
+            },
+            "artifacts": sorted(self.notification_results, key=lambda item: item["path"]),
+        }
+        Path(output).write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
 
     def comment_on_pull_request(self) -> None:
         number = self.event["pull_request"]["number"]

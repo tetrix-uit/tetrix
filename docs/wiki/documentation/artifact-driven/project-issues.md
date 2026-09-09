@@ -36,12 +36,26 @@ factory = {
     };
   };
 
-  composition.artifact-driven.project-issues.enable = true;
+  composition.artifact-driven.project-issues = {
+    enable = true;
+    notification = {
+      provider = "google-chat";
+      webhook-secret = "ARTIFACT_NOTIFICATION_WEBHOOK";
+    };
+  };
 };
 ```
 
 Set `factory.composition.artifact-driven.project-issues.artifact-status` to change the first
 status of an artifact type. Adapter selection alone does not enable this integration.
+
+Set `notification.provider` to `"google-chat"` or `"slack"` to send one summary after a merged
+artifact pull request synchronizes successfully. The default value is `"unset"`. This value sends
+no notification and does not add notification files to the repository.
+
+Use the [provider credential guide](project-issue-credentials.md) to make an incoming webhook and
+add its URL as a repository secret. The notification includes added, updated, renamed, and
+withdrawn artifacts. Manual scans and pull requests without artifact changes send no notification.
 
 ## GitHub Projects setup
 
@@ -88,6 +102,8 @@ Repofactory creates missing artifact type labels. It preserves labels that do no
 
 Each issue links to the current artifact, the accepted commit, and the merged pull request. The
 workflow adds one managed comment to the merged pull request with all synchronized issue URLs.
+If notification is enabled, the workflow sends the changes to the selected team destination after
+synchronization and comment creation succeed.
 
 Do not add issue URLs to artifact frontmatter. A provider change must not change the artifacts.
 
