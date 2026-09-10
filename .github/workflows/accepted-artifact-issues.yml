@@ -37,5 +37,5 @@ jobs:
         run: python3 .github/artifact-issues/notify.py
         env:
           ARTIFACT_ISSUES_RESULT: ${{ runner.temp }}/accepted-artifacts.json
-          ARTIFACT_NOTIFICATION_PROVIDER: slack
-          ARTIFACT_NOTIFICATION_WEBHOOK: ${{ secrets.ARTIFACT_NOTIFICATION_WEBHOOK }}
+          ARTIFACT_NOTIFICATION_USES: '["slack"]'
+          ARTIFACT_NOTIFICATION_SLACK_WEBHOOK: ${{ secrets.ARTIFACT_NOTIFICATION_WEBHOOK }}

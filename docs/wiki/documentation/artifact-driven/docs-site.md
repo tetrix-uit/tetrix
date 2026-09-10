@@ -31,32 +31,37 @@ the published website. The Actions tab shows the failed run.
 
 ## Set up deployment notifications
 
-The workflow can send one message after GitHub Pages deploys the site. Select Google Chat or Slack
-in `devenv.local.nix`:
+The workflow can send one message to each selected provider after GitHub Pages deploys the site.
 
 ```nix
 factory.composition.artifact-driven.docs-site.notification = {
-  provider = "google-chat"; # Or "slack".
-  webhook-secret = "DOCS_SITE_NOTIFICATION_WEBHOOK";
+  uses = [ "google-chat" "telegram" ];
+  google-chat.webhook-secret = "DOCS_SITE_NOTIFICATION_GOOGLE_CHAT_WEBHOOK";
+  telegram = {
+    token-secret = "DOCS_SITE_NOTIFICATION_TELEGRAM_TOKEN";
+    chat-id = "-100123";
+  };
 };
 ```
 
-The default provider is `"unset"`. This value generates no notifier or notification step.
+The default is an empty `uses` list. This list generates no notifier or notification step.
 
-Make an incoming webhook for the Google Chat space or Slack channel. Use the provider procedure:
+Make an incoming webhook for the Google Chat space or Slack channel. Use a bot token and chat ID
+for Telegram. Use the provider procedure:
 
 - [Google Chat incoming webhooks](https://developers.google.com/workspace/chat/quickstart/webhooks)
 - [Slack incoming webhooks](https://api.slack.com/messaging/webhooks)
+- [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage)
 
-Treat the webhook URL as a password. Store it in the GitHub Actions repository secret that the
-`webhook-secret` option names:
+Treat a webhook URL or a bot token as a password. Store each value in its configured GitHub
+Actions repository secret.
 
 ```bash
-read -rsp "Notification webhook: " DOCS_SITE_NOTIFICATION_WEBHOOK
+read -rsp "Google Chat webhook: " DOCS_SITE_NOTIFICATION_GOOGLE_CHAT_WEBHOOK
 printf '\n'
-printf '%s' "$DOCS_SITE_NOTIFICATION_WEBHOOK" \
-  | gh secret set DOCS_SITE_NOTIFICATION_WEBHOOK
-unset DOCS_SITE_NOTIFICATION_WEBHOOK
+printf '%s' "$DOCS_SITE_NOTIFICATION_GOOGLE_CHAT_WEBHOOK" \
+  | gh secret set DOCS_SITE_NOTIFICATION_GOOGLE_CHAT_WEBHOOK
+unset DOCS_SITE_NOTIFICATION_GOOGLE_CHAT_WEBHOOK
 ```
 
 The message identifies the repository, the deployed URL, the source revision, and the workflow

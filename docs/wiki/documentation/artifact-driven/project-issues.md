@@ -39,8 +39,12 @@ factory = {
   composition.artifact-driven.project-issues = {
     enable = true;
     notification = {
-      provider = "google-chat";
-      webhook-secret = "ARTIFACT_NOTIFICATION_WEBHOOK";
+      uses = [ "google-chat" "telegram" ];
+      google-chat.webhook-secret = "ARTIFACT_NOTIFICATION_GOOGLE_CHAT_WEBHOOK";
+      telegram = {
+        token-secret = "ARTIFACT_NOTIFICATION_TELEGRAM_TOKEN";
+        chat-id = "-100123";
+      };
     };
   };
 };
@@ -49,9 +53,9 @@ factory = {
 Set `factory.composition.artifact-driven.project-issues.artifact-status` to change the first
 status of an artifact type. Adapter selection alone does not enable this integration.
 
-Set `notification.provider` to `"google-chat"` or `"slack"` to send one summary after a merged
-artifact pull request synchronizes successfully. The default value is `"unset"`. This value sends
-no notification and does not add notification files to the repository.
+Set `notification.uses` to the required providers. The supported providers are `"google-chat"`,
+`"slack"`, and `"telegram"`. The default is an empty list. An empty list adds no notification
+files to the repository.
 
 Use the [provider credential guide](project-issue-credentials.md) to make an incoming webhook and
 add its URL as a repository secret. The notification includes added, updated, renamed, and

@@ -18,7 +18,7 @@ secret names, replace the default names too.
 | `GITHUB_TOKEN` | GitHub Actions | GitHub supplies this token for repository issues and comments. Do not add this secret. |
 | `GH_TOKEN` | Local shell | GitHub CLI uses this temporary variable during setup. |
 | `PROJECTS_TOKEN` | Repository secret | The workflow uses this secret for GitHub Projects. |
-| `ARTIFACT_NOTIFICATION_WEBHOOK` | Repository secret | The workflow sends accepted artifact summaries to this webhook. |
+| Notification provider secret | Repository secret | The workflow sends accepted artifact summaries to the selected provider. |
 
 The workflow exposes `PROJECTS_TOKEN` as `PROJECT_TOKEN` to the synchronizer. If you changed
 `token-secret` in the factory configuration, use that configured repository secret name.
@@ -120,12 +120,17 @@ generated workflow reads repository secrets with these default names.
 
 ## Set up an acceptance notification
 
-Select one notification provider in the Factory configuration:
+Select one or more notification providers in the Factory configuration:
 
 ```nix
 factory.composition.artifact-driven.project-issues.notification = {
-  provider = "google-chat"; # Or "slack".
-  webhook-secret = "ARTIFACT_NOTIFICATION_WEBHOOK";
+  uses = [ "google-chat" "slack" "telegram" ];
+  google-chat.webhook-secret = "ARTIFACT_NOTIFICATION_GOOGLE_CHAT_WEBHOOK";
+  slack.webhook-secret = "ARTIFACT_NOTIFICATION_SLACK_WEBHOOK";
+  telegram = {
+    token-secret = "ARTIFACT_NOTIFICATION_TELEGRAM_TOKEN";
+    chat-id = "-100123";
+  };
 };
 ```
 
@@ -151,27 +156,37 @@ Your Google Workspace administrator must permit incoming webhooks.
 For detailed instructions, refer to the
 [Slack incoming webhook guide](https://api.slack.com/messaging/webhooks).
 
-### Store the webhook
+### Set up Telegram
+
+1. Create a bot with BotFather.
+2. Copy the bot token.
+3. Get the chat ID for the target chat.
+4. Set `telegram.token-secret` to the bot token secret name.
+5. Set `telegram.chat-id` to the target chat ID.
+
+Refer to the [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage) for the API.
+
+### Store a provider secret
 
 Treat the webhook URL as a password. Read it with a silent prompt:
 
 ```bash
-read -rsp "Notification webhook: " ARTIFACT_NOTIFICATION_WEBHOOK
+read -rsp "Notification webhook: " ARTIFACT_NOTIFICATION_GOOGLE_CHAT_WEBHOOK
 printf '\n'
 ```
 
 Add the value to the configured repository secret:
 
 ```bash
-printf '%s' "$ARTIFACT_NOTIFICATION_WEBHOOK" \
-  | gh secret set ARTIFACT_NOTIFICATION_WEBHOOK --repo OWNER/REPOSITORY
+printf '%s' "$ARTIFACT_NOTIFICATION_GOOGLE_CHAT_WEBHOOK" \
+  | gh secret set ARTIFACT_NOTIFICATION_GOOGLE_CHAT_WEBHOOK --repo OWNER/REPOSITORY
 ```
 
 Check the secret name, and then remove the local variable:
 
 ```bash
 gh secret list --repo OWNER/REPOSITORY
-unset ARTIFACT_NOTIFICATION_WEBHOOK
+unset ARTIFACT_NOTIFICATION_GOOGLE_CHAT_WEBHOOK
 ```
 
 The next merged pull request with a supported artifact change tests delivery. A manual workflow

@@ -9,11 +9,12 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+from collections.abc import Mapping
 from typing import Any, Callable
 
 MAX_MESSAGE_LENGTH = 3500
 MAX_ATTEMPTS = 3
-PROVIDERS = {"google-chat", "slack"}
+PROVIDERS = {"google-chat", "slack", "telegram"}
 CHANGES = {"added", "updated", "renamed", "withdrawn"}
 
 
@@ -84,18 +85,27 @@ def build_message(result: dict[str, Any]) -> str | None:
 
 def send_message(
     provider: str,
-    webhook: str,
+    target: str,
     message: str,
+    chat_id: str = "",
     opener: Callable[..., Any] = urllib.request.urlopen,
     sleeper: Callable[[float], None] = time.sleep,
 ) -> None:
     if provider not in PROVIDERS:
         fail(f"Unsupported notification provider: {provider}")
-    if not webhook:
-        fail("ARTIFACT_NOTIFICATION_WEBHOOK must not be empty")
+    if not target:
+        fail(f"{provider} notification target must not be empty")
+    if provider == "telegram":
+        if not chat_id:
+            fail("telegram notification chat ID must not be empty")
+        url = f"https://api.telegram.org/bot{target}/sendMessage"
+        payload = {"chat_id": chat_id, "text": message}
+    else:
+        url = target
+        payload = {"text": message}
     request = urllib.request.Request(
-        webhook,
-        data=json.dumps({"text": message}, ensure_ascii=False).encode(),
+        url,
+        data=json.dumps(payload, ensure_ascii=False).encode(),
         headers={
             "Content-Type": "application/json; charset=utf-8",
             "User-Agent": "repofactory-artifact-notification",
@@ -126,6 +136,36 @@ def send_message(
         fail(f"{provider} notification failed because of a network error")
 
 
+def configured_uses(environment: Mapping[str, str]) -> list[str]:
+    uses: object
+    try:
+        uses = json.loads(environment.get("ARTIFACT_NOTIFICATION_USES", ""))
+    except json.JSONDecodeError as error:
+        fail("ARTIFACT_NOTIFICATION_USES must be a JSON list")
+    if not isinstance(uses, list) or not all(isinstance(use, str) and use in PROVIDERS for use in uses):
+        fail("ARTIFACT_NOTIFICATION_USES must contain supported providers")
+    if len(uses) != len(set(uses)):
+        fail("ARTIFACT_NOTIFICATION_USES must not contain duplicate providers")
+    return uses
+
+
+def send_all(environment: Mapping[str, str], message: str) -> None:
+    failures = []
+    for provider in configured_uses(environment):
+        try:
+            if provider == "telegram":
+                send_message(provider, environment.get("ARTIFACT_NOTIFICATION_TELEGRAM_TOKEN", ""), message, environment.get("ARTIFACT_NOTIFICATION_TELEGRAM_CHAT_ID", ""))
+            else:
+                name = "ARTIFACT_NOTIFICATION_" + provider.upper().replace("-", "_") + "_WEBHOOK"
+                send_message(provider, environment.get(name, ""), message)
+            print(f"Sent accepted artifact notification to {provider}")
+        except RuntimeError as error:
+            print(f"accepted-artifact-notification: {error}", file=sys.stderr)
+            failures.append(provider)
+    if failures:
+        fail("Notification delivery failed for: " + ", ".join(failures))
+
+
 def main() -> int:
     try:
         result = load_result(os.environ.get("ARTIFACT_ISSUES_RESULT", ""))
@@ -133,9 +173,7 @@ def main() -> int:
         if message is None:
             print("No accepted artifact changes need notification")
             return 0
-        provider = os.environ.get("ARTIFACT_NOTIFICATION_PROVIDER", "")
-        send_message(provider, os.environ.get("ARTIFACT_NOTIFICATION_WEBHOOK", ""), message)
-        print(f"Sent accepted artifact notification to {provider}")
+        send_all(os.environ, message)
     except (OSError, RuntimeError, ValueError) as error:
         print(f"accepted-artifact-notification: {error}", file=sys.stderr)
         return 1
