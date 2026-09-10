@@ -1,6 +1,6 @@
 # Feature: LaTeX report authoring
 
-**Current version:** 1.0.0
+**Current version:** 2.0.0
 
 ## Summary
 
@@ -10,9 +10,9 @@ deployment compiles the final report and publishes its PDF on a report page.
 
 ## Current artifacts
 
-- [Requirements](versions/1.0.0/requirements/README.md)
-- [Specifications](versions/1.0.0/specifications/README.md)
-- [Decisions](versions/1.0.0/decisions/)
+- [Requirements](versions/2.0.0/requirements/README.md)
+- [Specifications](versions/2.0.0/specifications/README.md)
+- [Decisions](versions/2.0.0/decisions/)
 
 ## Versions
 
