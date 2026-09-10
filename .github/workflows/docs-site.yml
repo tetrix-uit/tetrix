@@ -5,6 +5,7 @@ on:
     paths:
       - docs/**
       - apps/documentation/**
+      - devenv.nix
       - .github/workflows/docs-site.yml
   workflow_dispatch:
 
@@ -25,6 +26,16 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
+      - name: Build the final report
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: docs/reports/final-project-report.vi.tex
+          latexmk_use_xelatex: true
+      - name: Copy the final report
+        working-directory: .
+        run: |
+          mkdir -p apps/documentation/static
+          cp docs/reports/final-project-report.vi.pdf apps/documentation/static/final-project-report.vi.pdf
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
