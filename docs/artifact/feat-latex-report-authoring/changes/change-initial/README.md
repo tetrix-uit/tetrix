@@ -1,14 +1,14 @@
-# Change: Publish final report
+# Change: Initial
 
 **Feature:** [LaTeX report authoring](../../README.md)
-**From:** 1.0.0
-**To:** 2.0.0
+**From:** none
+**To:** 1.0.0
 **Type:** Requirements
 
 ## Reason
 
-Contributors need the documentation site deployment to compile the final report and publish the
-PDF. Site users need a page that displays the published report.
+Project contributors need a repeatable local environment and setup guidance to write and compile
+LaTeX reports with XeLaTeX. This change is the first build of the feature.
 
 ## Artifacts
 

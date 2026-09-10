@@ -81,3 +81,6 @@ again.
 - A link to a URL path of a folder must end with `/`, for example `](decisions/)`. Without the
   `/`, the browser resolves the link in the parent folder.
 - The templates under `docs/wiki/**/templates/` do not render.
+- A version folder `versions/<version>/` has no README. The site generates an index page for it
+  and shows the version number as the label. Do not link to the version folder itself: the site
+  builder reads `versions/1.0.0/` as a file with the extension `.0`. Link to a file in the folder.

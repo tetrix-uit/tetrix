@@ -20,8 +20,9 @@ requirements.
 
 - `docs/wiki/documentation/artifact-driven/README.md`, the model and the five phases.
 - The page in `docs/wiki/repo-arch/`, the components and the layout.
-- `docs/artifact/feat-<name>/tasks/`, the tasks of the feature. Read the specifications and the
-  requirements that each task covers.
+- `docs/artifact/feat-<name>/changes/change-<name>/tasks/`, the tasks of the change. Read the
+  specifications and the requirements that each task covers. A file that is not in the change is
+  in `versions/<current>/` of the feature.
 - `AGENTS.md`, the rules of the repository.
 - `docs/domain/context-<name>/README.md`, the context canvas, when `docs/domain/` exists.
 
@@ -74,7 +75,7 @@ requirements.
 ## Read first
 
 - `docs/wiki/documentation/artifact-driven/README.md` and the page in `docs/wiki/repo-arch/`.
-- `docs/artifact/feat-<name>/tasks/`, `AGENTS.md`, and `docs/domain/context-orders/README.md`.
+- `docs/artifact/feat-<name>/changes/change-<name>/tasks/`, `AGENTS.md`, and `docs/domain/context-orders/README.md`.
 
 ## Domain
 

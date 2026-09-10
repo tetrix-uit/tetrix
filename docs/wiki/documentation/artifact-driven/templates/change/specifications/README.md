@@ -1,5 +1,7 @@
 # Specifications: <feature name>
 
+**Change:** [<change name>](../../../changes/change-<name>/README.md)
+
 ## Solution
 
 <How the solution meets the requirements. Name the components that change.>

@@ -8,11 +8,11 @@ description = "Implements the shared libraries in libs/: the shared kernels, the
 
 [agents.requirement-expert]
 config_file = "agents/requirement-expert.toml"
-description = "Gathers the business need and writes the requirements of a feature. Owns phase 1 of the artifact-driven documentation model. Use when a new feature starts, or when the requirements of a feature change."
+description = "Gathers the business need and writes the change summary and the requirements of a feature. Owns phase 1 of the artifact-driven documentation model. Use when a new feature starts, or when a change to a feature starts."
 
 [agents.solution-expert]
 config_file = "agents/solution-expert.toml"
-description = "Designs the solution for a feature and writes the specifications, the decisions, and the implementation plan. Owns phases 2 and 3 of the artifact-driven documentation model. Works with the implementation expert of each component that the solution touches."
+description = "Designs the solution for a feature and writes the specifications, the decisions, and the implementation plan. Owns phases 2, 3, and 5 of the artifact-driven documentation model. Keeps the versions of each feature. Works with the implementation expert of each component that the solution touches."
 
 [agents.tetrix-expert]
 config_file = "agents/tetrix-expert.toml"
