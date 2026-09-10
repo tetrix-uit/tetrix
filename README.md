@@ -72,6 +72,71 @@ devenv shell
    prek install
    ```
 
+## LaTeX reports
+
+Use XeLaTeX to write and compile LaTeX reports. Run the compile command in the directory that
+contains `report.tex`.
+
+### Set up LaTeX with devenv
+
+1. Enter the devenv shell.
+
+   ```bash
+   devenv shell
+   ```
+
+1. Check the XeLaTeX installation.
+
+   ```bash
+   xelatex --version
+   ```
+
+1. Compile a report with XeLaTeX.
+
+   ```bash
+   latexmk -xelatex report.tex
+   ```
+
+The devenv shell includes the full TeX Live distribution and `latexmk`.
+
+### Set up LaTeX without devenv
+
+#### Debian or Ubuntu
+
+1. Install the full TeX Live distribution and `latexmk`.
+
+   ```bash
+   sudo apt install texlive-full latexmk
+   ```
+
+1. Check the XeLaTeX installation.
+
+   ```bash
+   xelatex --version
+   ```
+
+#### macOS
+
+1. Install MacTeX without the graphical applications.
+
+   ```bash
+   brew install --cask mactex-no-gui
+   ```
+
+`mactex-no-gui` includes XeLaTeX and `latexmk`.
+
+1. Check the XeLaTeX installation.
+
+   ```bash
+   xelatex --version
+   ```
+
+After you install the tools, compile a report with XeLaTeX.
+
+```bash
+latexmk -xelatex report.tex
+```
+
 ## Read more
 
 - [Multiple Repositories Architecture](docs/wiki/repo-arch/multiple-repositories.md).
