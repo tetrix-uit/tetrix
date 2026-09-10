@@ -21,6 +21,7 @@
 \usepackage{xurl}
 \usepackage{hyperref}
 \usepackage{microtype}
+\usepackage{tikz}
 
 \definecolor{linkblue}{HTML}{145DA0}
 \definecolor{todored}{HTML}{B42318}
@@ -66,6 +67,26 @@
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{15pt}
 
+% Chữ ký tay cách điệu cho Nguyễn Trọng Khương
+\newcommand{\signatureKhuong}{%
+  \begin{tikzpicture}[scale=0.48, baseline=-0.22cm, color=linkblue, line cap=round, line join=round]
+    % Thân chính chữ K uốn lượn phong cách chữ ký
+    \draw[line width=1.3pt] (0.1, 1.0) to[out=25, in=115] (0.7, 1.15) to[out=-65, in=95] (0.55, -0.15) to[out=-85, in=170] (0.85, -0.4) to[out=-10, in=-90] (1.05, -0.1);
+    % Cánh chữ K vút lên và móc xuống
+    \draw[line width=1.2pt] (1.3, 0.95) to[out=-135, in=135] (0.65, 0.45) to[out=-25, in=140] (1.45, -0.25);
+    % Vòng nối sang chữ h
+    \draw[line width=1.0pt] (0.65, 0.45) to[out=50, in=110] (1.7, 1.1) to[out=-70, in=90] (1.6, 0.05) to[out=80, in=140] (1.85, 0.4) to[out=-40, in=170] (2.1, 0.1);
+    % u - o - n lướt sóng nhanh
+    \draw[line width=1.0pt] (2.1, 0.1) to[out=-10, in=-120] (2.3, 0.35) to[out=-60, in=180] (2.55, 0.1) to[out=0, in=-110] (2.8, 0.35) to[out=-70, in=150] (3.05, 0.1) to[out=30, in=160] (3.3, 0.25) to[out=-20, in=160] (3.5, 0.1);
+    % Chữ g móc đuôi thắt nút
+    \draw[line width=1.1pt] (3.5, 0.1) to[out=60, in=120] (3.85, 0.3) to[out=-60, in=60] (3.85, -0.05) to[out=-120, in=-60] (3.5, 0.1);
+    \draw[line width=1.2pt] (3.85, 0.3) to[out=-80, in=90] (3.9, -0.55) to[out=-90, in=0] (3.4, -0.85) to[out=180, in=-110] (3.3, -0.4) to[out=70, in=165] (3.8, -0.3);
+    % Nét gạch chân chữ ký phóng khoáng vút dài và chấm dứt khoát
+    \draw[line width=1.4pt] (0.3, -0.5) to[out=-10, in=190] (4.3, -0.4) to[out=10, in=-140] (4.8, -0.1);
+    \fill (4.95, -0.08) circle (1.3pt);
+  \end{tikzpicture}%
+}
+
 \begin{document}
 
 % ----------------------------------------------------------------
@@ -93,7 +114,7 @@
   \textbf{MSSV} & \textbf{Họ và tên} & \textbf{Vai trò} \\
   \midrule
   26730021 & Trần Minh Hiếu & Leader / Editor \\
-  26730037 & Nguyễn Trọng Khương &  \\
+  26730037 & Nguyễn Trọng Khương & Member / Developer \\
 \end{tabular}
 
   \vfill
@@ -121,6 +142,8 @@
     \toprule
     \textbf{MSSV} & \textbf{Họ và tên} & \textbf{Vai trò} & \textbf{Trách nhiệm chính} \\
     \midrule
+    26730021 & Trần Minh Hiếu & Leader / Editor & Quản lý tiến độ, điều phối nhóm, thiết lập quy trình làm việc và biên tập báo cáo \\
+    26730037 & Nguyễn Trọng Khương & Member / Developer & Lập trình các tính năng game chính, phối hợp thiết kế kiến trúc và viết báo cáo \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -220,7 +243,7 @@ Các thành viên xác nhận đã đọc, thống nhất và cam kết thực h
     \textbf{Họ và tên} & \textbf{Xác nhận} & \textbf{Ký tên} & \textbf{Ngày} \\
     \midrule
     Trần Minh Hiếu & Đồng ý &  & 10/09/2026 \\
-    Nguyễn Trọng Khương & Đồng ý & & 10/09/2026 \\
+    Nguyễn Trọng Khương & Đồng ý & \signatureKhuong & 10/09/2026 \\
     \bottomrule
   \end{tabularx}
 \end{table}
