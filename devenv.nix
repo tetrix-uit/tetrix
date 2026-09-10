@@ -1,5 +1,9 @@
 { pkgs, lib, ... }:
 {
+  packages = [
+    pkgs.texliveFull
+  ];
+
   git-hooks = {
     package = pkgs.prek;
     hooks.convco = {

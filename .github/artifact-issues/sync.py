@@ -413,7 +413,11 @@ class TrelloAdapter:
         for kind in ARTIFACT_KINDS:
             board_kinds.setdefault(self.board_for(kind), set()).add(kind)
         for board, kinds in board_kinds.items():
-            context = {"lists": {}, "labels": {}}
+            board_data = self.call("GET", f"/boards/{board}?fields=id")
+            board_id = board_data.get("id")
+            if not board_id:
+                fail(f"The Trello board {board} has no ID")
+            context = {"id": board_id, "lists": {}, "labels": {}}
             self.boards[board] = context
             lists = self.call("GET", f"/boards/{board}/lists?filter=all")
             by_name: dict[str, list[str]] = {}
@@ -443,7 +447,7 @@ class TrelloAdapter:
                 name = type_label(kind)
                 matches = by_label.get(name, [])
                 context["labels"][name] = matches[0] if matches else self.call(
-                    "POST", "/labels", {"name": name, "color": TRELLO_LABEL_COLORS[kind], "idBoard": board}
+                    "POST", "/labels", {"name": name, "color": TRELLO_LABEL_COLORS[kind], "idBoard": board_id}
                 )
             cards = self.call("GET", f"/boards/{board}/cards?filter=all&fields=id,name,desc,url,shortUrl,closed,idLabels,idBoard")
             for card in cards:
