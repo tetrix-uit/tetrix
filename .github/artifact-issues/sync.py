@@ -488,7 +488,17 @@ class TrelloAdapter:
         if created:
             card = self.call("POST", "/cards", payload)
         else:
-            card = self.call("PUT", f"/cards/{card['id']}", payload)
+            # A card found during preflight can disappear before this update
+            # (manual Trello cleanup or a race). Trello answers HTTP 400 "invalid id".
+            # Recreate the card instead of failing the run.
+            try:
+                card = self.call("PUT", f"/cards/{card['id']}", payload)
+            except RuntimeError as error:
+                if "failed with HTTP 400" not in str(error) or "invalid id" not in str(error):
+                    raise
+                payload.pop("idBoard", None)
+                payload["idList"] = context["lists"][status]
+                card = self.call("POST", "/cards", payload)
         wanted = context["labels"][type_label(artifact.kind)]["id"]
         managed = {
             label["id"]
