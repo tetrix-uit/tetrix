@@ -1,12 +1,18 @@
 # Feature: LaTeX report authoring
 
-**Current version:** none
+**Current version:** 2.0.0
 
 ## Summary
 
 This feature lets project contributors write and compile LaTeX reports with XeLaTeX. Contributors
 can use the project development environment or the setup guidance. The documentation site
 deployment compiles the final report and publishes its PDF on a report page.
+
+## Current artifacts
+
+- [Requirements](versions/2.0.0/requirements/README.md)
+- [Specifications](versions/2.0.0/specifications/README.md)
+- [Decisions](versions/2.0.0/decisions/)
 
 ## Versions
 
@@ -18,3 +24,4 @@ deployment compiles the final report and publishes its PDF on a report page.
 ## Artifacts
 
 - [Changes](changes/)
+- [Versions](versions/)
