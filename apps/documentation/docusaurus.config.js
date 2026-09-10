@@ -59,7 +59,7 @@ const config = {
   url: site.url,
   baseUrl: site.baseUrl,
   trailingSlash: true,
-  staticDirectories: [],
+  staticDirectories: ['static'],
   onBrokenLinks: 'warn',
   markdown: {
     format: 'detect',
