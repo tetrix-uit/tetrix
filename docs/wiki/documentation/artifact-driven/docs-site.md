@@ -29,6 +29,72 @@ under Pages, set the source to "GitHub Actions". Do this step one time.
 A push to another branch does not change the published website. A failed build does not change
 the published website. The Actions tab shows the failed run.
 
+## Publish generated assets
+
+Use typed options to add generated files to the site. Do not replace `docusaurus.config.js` or
+`.github/workflows/docs-site.yml`. You do not need a `docusaurus.config.local.js` file.
+
+`static-directories` contains paths relative to `apps/documentation/`. The factory adds each
+`workflow.watch-paths` value after its default watch paths.
+
+The build workflow has three step lists:
+
+| Option | Position |
+| --- | --- |
+| `workflow.build.before-node-setup` | After checkout and before Node.js setup. |
+| `workflow.build.before-site-build` | After `npm ci` and before `npm run build`. |
+| `workflow.build.after-site-build` | After `npm run build` and before the Pages artifact upload. |
+
+A step supports `name`, `uses`, `with`, `run`, `env`, and `working-directory`. Set one of `uses`
+or `run`. A run step uses `apps/documentation/` as its default working directory.
+
+This example builds a LaTeX manual from one service. It copies the PDF into a static directory.
+Docusaurus then adds the PDF to the website build.
+
+```nix
+factory.composition.artifact-driven.docs-site = {
+  static-directories = [ "static" ];
+
+  workflow = {
+    watch-paths = [ "services/manual/docs/**" ];
+
+    build.before-node-setup = [
+      {
+        name = "Build the manual PDF";
+        uses = "xu-cheng/latex-action@v4";
+        "with" = {
+          root_file = "manual.tex";
+          working_directory = "services/manual/docs";
+          latexmk_use_xelatex = true;
+        };
+      }
+    ];
+
+    build.before-site-build = [
+      {
+        name = "Copy the manual PDF";
+        run = ''
+          mkdir -p static/manual
+          cp "$PDF_SOURCE" static/manual/manual.pdf
+        '';
+        env.PDF_SOURCE = "../../services/manual/docs/manual.pdf";
+        working-directory = "apps/documentation";
+      }
+    ];
+
+    build.after-site-build = [
+      {
+        name = "Check the published manual PDF";
+        run = "test -f build/manual/manual.pdf";
+      }
+    ];
+  };
+};
+```
+
+The published file URL is `<base-url>/manual/manual.pdf`. A failed custom step stops the build and
+prevents a deployment.
+
 ## Set up deployment notifications
 
 The workflow can send one message to each selected provider after GitHub Pages deploys the site.
