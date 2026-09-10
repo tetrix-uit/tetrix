@@ -9,3 +9,4 @@ before you add or change a feature.
 | Feature | Summary |
 | --- | --- |
 | [feat-name](feat-name/README.md) | One sentence that says what the feature does. |
+| [feat-latex-report-authoring](feat-latex-report-authoring/README.md) | Lets project contributors write and compile LaTeX reports with XeLaTeX. |
