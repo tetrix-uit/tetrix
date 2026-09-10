@@ -137,6 +137,19 @@
         // factory.composition.artifact-driven.docs-site; this file reads it.
         const site = require('./site.json');
 
+        // Title Case each word so the sidebar casing stays consistent:
+        // "decisions" becomes "Decisions" and "repo-arch" becomes "Repo Arch".
+        function humanizeFolder(name) {
+          return name
+            .split('/')
+            .pop()
+            .replace(/[-_]+/g, ' ')
+            .split(' ')
+            .filter(Boolean)
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+        }
+
         // Give each folder without a README.md a generated index page, and label each
         // folder with a README.md by the title of that page.
         function withIndexes(items, docs) {
@@ -150,10 +163,16 @@
               if (doc) {
                 category.label = doc.title;
               }
-            } else if (!category.link) {
+            } else {
               const folder = folderOf(category, docs);
-              if (folder) {
-                category.link = { type: 'generated-index', slug: '/' + folder };
+              const label = humanizeFolder(folder || category.label);
+              category.label = label;
+              if (!category.link) {
+                if (folder) {
+                  category.link = { type: 'generated-index', title: label, slug: '/' + folder };
+                }
+              } else if (category.link.type === 'generated-index' && !category.link.title) {
+                category.link = { ...category.link, title: label };
               }
             }
             return category;

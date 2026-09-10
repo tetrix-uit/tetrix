@@ -93,11 +93,11 @@
     "repofactory": {
       "flake": false,
       "locked": {
-        "lastModified": 1789044421,
-        "narHash": "sha256-tz0iLqVUhkn/EGVFyqWpx/aFGJ4I7fb6WOiLTbjix74=",
+        "lastModified": 1789045549,
+        "narHash": "sha256-+G6kSKmWjKvK9D3XeW05r39Ox73//8gWtkQpAJXXtvo=",
         "owner": "hieutran21198",
         "repo": "repofactory",
-        "rev": "78afcddb426d41015aa06a50b5d3f7e9d1ec5533",
+        "rev": "b1e6df4862918f2d6610afe4509d5c5ff5becbea",
         "type": "github"
       },
       "original": {
