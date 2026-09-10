@@ -27,7 +27,9 @@ The `build` job will run these steps in this order after repository checkout and
 build`:
 
 1. Run `xu-cheng/latex-action@v3` with `root_file:
-   docs/reports/final-project-report.vi.tex` and `latexmk_use_xelatex: true`.
+   docs/reports/final-project-report.vi.tex`, `work_in_root_file_dir: true`, and
+   `latexmk_use_xelatex: true`. The action compiles in the root file directory, so the PDF lands
+   next to the report source.
 2. Copy `docs/reports/final-project-report.vi.pdf` to
    `apps/documentation/static/final-project-report.vi.pdf`.
 3. Run `npm run build` in `apps/documentation`.
