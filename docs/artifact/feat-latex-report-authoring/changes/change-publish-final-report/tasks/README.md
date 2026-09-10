@@ -1,5 +1,7 @@
 # Implementation plan: Publish final report
 
+**Change:** [change-publish-final-report](../../../changes/change-publish-final-report/README.md)
+
 ## Order of work
 
 | Step | Task | Depends on |
