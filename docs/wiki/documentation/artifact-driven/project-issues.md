@@ -12,8 +12,34 @@ only after an artifact pull request merges.
 | Rename | Update the existing issue identity and links. |
 | Delete | Set status `Withdrawn`, then close or archive the issue. |
 | Close a pull request without merge | Make no project change. |
+| Add or change a file under `versions/` | Make no project change. |
+| Add or change a file in an unsupported path | Stop with an error that names the path. |
 
 The workflow also has a manual full scan. Use it for the first setup or for recovery.
+
+## Synchronized files
+
+The workflow synchronizes these files of each feature under `docs/artifact/feat-<name>/`:
+
+- The feature `README.md`.
+- The `README.md` of each change under `changes/change-<name>/`.
+- Each artifact inside a change: the master `README.md` of a folder, a requirement, a
+  specification, a decision, an implementation plan, and a task.
+
+The workflow does not synchronize these files:
+
+- A file under `versions/`. A version is a copy of accepted artifacts. It gets no issue, no
+  comment line, and no notification.
+- The global index `docs/artifact/README.md`.
+- A file that is not Markdown.
+
+A feature has no root `requirements/`, `specifications/`, `decisions/`, or `tasks/` folder. The
+manual scan stops with an error on a tree that keeps these root folders. The error names each
+path.
+
+> **Note: Migrate an existing repository.** Move the root folders of each feature to
+> `changes/change-initial/` in one pull request. Use `git mv`. A renamed card keeps its identity.
+> Add `versions/` in a later pull request.
 
 ## Factory configuration
 

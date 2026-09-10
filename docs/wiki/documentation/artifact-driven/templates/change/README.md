@@ -1,7 +1,9 @@
 # Change: <name>
 
 **Feature:** [<feature name>](../../README.md)
-**Type:** Requirements | Specifications | Decisions
+**From:** <version or none>
+**To:** <version>
+**Type:** Requirements | Specifications | Decisions | Correction
 
 ## Reason
 
@@ -9,7 +11,11 @@
 
 ## Artifacts
 
-- [Requirements](requirements/README.md) (present only if the requirements change)
-- [Specifications](specifications/README.md)
-- [Decisions](decisions/)
-- [Implementation plan](tasks/README.md)
+- [Requirements](requirements/README.md) (present only if a requirement changes)
+- [Specifications](specifications/README.md) (present only if a specification changes)
+- [Decisions](decisions/) (present only if a decision changes)
+- [Implementation plan](tasks/README.md) (present only if the change needs code)
+
+## Removed artifacts
+
+- `specifications/spec-name.md` (delete this section if the change removes no artifact)
