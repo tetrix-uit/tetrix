@@ -13,6 +13,9 @@ The directory is in `apps/`, `services/`, `libs/`, `deployment/`, or `e2e/`.
 Keep the requirements, the specifications, the decisions, and the tasks of each feature in
 `docs/artifact/`. Do the five phases in order. Commit at the end of each phase.
 
+Coordinate each change with the `artifact-master` role (opencode) or skill (claude, codex).
+Do one phase at a time with Plan-Pn then Build-Pn. Do not plan all five phases in one pass.
+
 Keep the domain model in `docs/domain/`. One bounded context is one directory in `services/`.
 Update the domain artifacts in the phase that owns them: the strategic design in phase 1, the
 tactical design in phase 2.

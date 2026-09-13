@@ -95,6 +95,11 @@ Do the phases in order. Do not start a phase before the commit of the phase befo
 Each phase ends with a commit that contains the artifacts of that phase. Phases 1 to 4 happen in
 the change folder. The steps are the same for `change-initial` and for a later change.
 
+An `artifact-master` coordinator runs one change phase by phase with Plan-Pn then Build-Pn.
+Plan-Pn is read-only and waits for approval. Build-Pn delegates to the owning expert and
+commits that phase only. The committed output of Pn is the input of Pn+1. Phase 4 has no
+plan; it builds the approved tasks.
+
 | Phase | Name | Input | Output |
 | --- | --- | --- | --- |
 | 1 | Requirements | The business need, or the reason for a change. | `changes/change-<name>/README.md`, and `requirements/` if a requirement changes. |

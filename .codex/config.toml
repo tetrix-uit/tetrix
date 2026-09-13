@@ -1,3 +1,7 @@
+[agents.artifact-master]
+config_file = "agents/artifact-master.toml"
+description = "Coordinates one artifact-driven change phase by phase with Plan-Pn then Build-Pn. Owns coordination only and delegates content to the owning expert. Use for coordinating a change, planning then building a phase, or running the next artifact phase."
+
 [agents.e2e-expert]
 config_file = "agents/e2e-expert.toml"
 description = "Implements the shared end-to-end tests in e2e/: one test per workflow that uses more than one application or service. Owns phase 4 of the artifact-driven documentation model for that component. Use for a task that changes e2e/, or when the solution expert needs the specifications or the tasks of the end-to-end tests."
