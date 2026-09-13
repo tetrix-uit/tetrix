@@ -1,13 +1,18 @@
 # Feature: <name>
 
+**Current version:** none
+
 ## Summary
 
 <One or two sentences that say what the feature does and for whom.>
 
+## Versions
+
+| Version | Change | Type |
+| --- | --- | --- |
+| 1.0.0 | [Initial](changes/change-initial/README.md) | Requirements |
+
 ## Artifacts
 
-- [Requirements](requirements/README.md)
-- [Specifications](specifications/README.md)
-- [Decisions](decisions/) (delete this line if the feature has no decision)
-- [Implementation plan](tasks/README.md)
-- [Changes](changes/) (add this line at the first change)
+- [Changes](changes/)
+- [Versions](versions/) (present after the first version)

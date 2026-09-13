@@ -1,5 +1,7 @@
 # Implementation plan: <feature name>
 
+**Change:** [<change name>](../../../changes/change-<name>/README.md)
+
 ## Order of work
 
 | Step | Task | Depends on |

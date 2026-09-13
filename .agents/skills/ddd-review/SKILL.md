@@ -19,7 +19,8 @@ Read these files before the review:
 - The DDD phase mapping in `docs/wiki/design/ddd/artifact-driven.md`.
 - The selected repository architecture guide in `docs/wiki/repo-arch/`.
 - The domain artifacts in `docs/domain/` that are in scope.
-- The feature artifacts in `docs/artifact/` that are in scope.
+- The feature artifacts in `docs/artifact/` that are in scope: the change under review and
+  `versions/<current>/` of its feature.
 
 ## Procedure
 
@@ -76,4 +77,4 @@ Set `Owner: solution expert` for a phase 2 or phase 3 finding.
 - Do not choose a domain model or make a domain decision.
 - Do not move phase ownership.
 - The requirement expert owns phase 1.
-- The solution expert owns phases 2 and 3.
+- The solution expert owns phases 2, 3, and 5.

@@ -1,3 +1,7 @@
+[agents.artifact-master]
+config_file = "agents/artifact-master.toml"
+description = "Coordinates one artifact-driven change phase by phase with Plan-Pn then Build-Pn. Owns coordination only and delegates content to the owning expert. Use for coordinating a change, planning then building a phase, or running the next artifact phase."
+
 [agents.e2e-expert]
 config_file = "agents/e2e-expert.toml"
 description = "Implements the shared end-to-end tests in e2e/: one test per workflow that uses more than one application or service. Owns phase 4 of the artifact-driven documentation model for that component. Use for a task that changes e2e/, or when the solution expert needs the specifications or the tasks of the end-to-end tests."
@@ -8,11 +12,11 @@ description = "Implements the shared libraries in libs/: the shared kernels, the
 
 [agents.requirement-expert]
 config_file = "agents/requirement-expert.toml"
-description = "Gathers the business need and writes the requirements of a feature. Owns phase 1 of the artifact-driven documentation model. Use when a new feature starts, or when the requirements of a feature change."
+description = "Gathers the business need and writes the change summary and the requirements of a feature. Owns phase 1 of the artifact-driven documentation model. Use when a new feature starts, or when a change to a feature starts."
 
 [agents.solution-expert]
 config_file = "agents/solution-expert.toml"
-description = "Designs the solution for a feature and writes the specifications, the decisions, and the implementation plan. Owns phases 2 and 3 of the artifact-driven documentation model. Works with the implementation expert of each component that the solution touches."
+description = "Designs the solution for a feature and writes the specifications, the decisions, and the implementation plan. Owns phases 2, 3, and 5 of the artifact-driven documentation model. Keeps the versions of each feature. Works with the implementation expert of each component that the solution touches."
 
 [agents.tetrix-expert]
 config_file = "agents/tetrix-expert.toml"

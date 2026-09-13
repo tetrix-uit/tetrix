@@ -1,5 +1,7 @@
 # Specifications: LaTeX report authoring
 
+**Change:** [change-initial](../../../changes/change-initial/README.md)
+
 ## Solution
 
 The root development environment will include the full TeX Live distribution, which gives

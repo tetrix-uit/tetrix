@@ -1,5 +1,7 @@
 # Implementation plan: LaTeX report authoring
 
+**Change:** [change-initial](../../../changes/change-initial/README.md)
+
 ## Order of work
 
 | Step | Task | Depends on |

@@ -1,5 +1,7 @@
 # Requirements: LaTeX report authoring
 
+**Change:** [change-initial](../../../changes/change-initial/README.md)
+
 ## Business need
 
 Project contributors need a repeatable local environment to write and compile LaTeX reports with

@@ -2,6 +2,19 @@
 // factory.composition.artifact-driven.docs-site; this file reads it.
 const site = require('./site.json');
 
+// Title Case each word so the sidebar casing stays consistent:
+// "decisions" becomes "Decisions" and "repo-arch" becomes "Repo Arch".
+function humanizeFolder(name) {
+  return name
+    .split('/')
+    .pop()
+    .replace(/[-_]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 // Give each folder without a README.md a generated index page, and label each
 // folder with a README.md by the title of that page.
 function withIndexes(items, docs) {
@@ -15,10 +28,16 @@ function withIndexes(items, docs) {
       if (doc) {
         category.label = doc.title;
       }
-    } else if (!category.link) {
+    } else {
       const folder = folderOf(category, docs);
-      if (folder) {
-        category.link = { type: 'generated-index', slug: '/' + folder };
+      const label = humanizeFolder(folder || category.label);
+      category.label = label;
+      if (!category.link) {
+        if (folder) {
+          category.link = { type: 'generated-index', title: label, slug: '/' + folder };
+        }
+      } else if (category.link.type === 'generated-index' && !category.link.title) {
+        category.link = { ...category.link, title: label };
       }
     }
     return category;
@@ -48,9 +67,50 @@ function folderOf(category, docs) {
   return null;
 }
 
+const SIDEBAR_ORDER = ['requirements', 'decisions', 'specifications', 'tasks'];
+const sidebarOrderIndex = new Map(SIDEBAR_ORDER.map((name, index) => [name, index]));
+
+function sidebarSortKey(item) {
+  if (item.type === 'category') {
+    return (item.label || '').toLowerCase();
+  }
+  if (item.type === 'doc') {
+    return item.id.split('/').pop().toLowerCase();
+  }
+  return (item.label || '').toLowerCase();
+}
+
+function normalizeSidebarKey(key) {
+  const normalized = key.replace(/[-_]+/g, '');
+  if (normalized === 'requirement' || normalized === 'requirements') return 'requirements';
+  if (normalized === 'adr' || normalized === 'adrs' || normalized === 'decision' || normalized === 'decisions') return 'decisions';
+  if (normalized === 'spec' || normalized === 'specs' || normalized === 'specification' || normalized === 'specifications') return 'specifications';
+  if (normalized === 'task' || normalized === 'tasks' || normalized === 'implementationplan' || normalized === 'implementationplans') return 'tasks';
+  return normalized;
+}
+
+function compareSidebarItems(a, b) {
+  const keyA = normalizeSidebarKey(sidebarSortKey(a));
+  const keyB = normalizeSidebarKey(sidebarSortKey(b));
+  const indexA = sidebarOrderIndex.has(keyA) ? sidebarOrderIndex.get(keyA) : Infinity;
+  const indexB = sidebarOrderIndex.has(keyB) ? sidebarOrderIndex.get(keyB) : Infinity;
+  if (indexA !== indexB) return indexA - indexB;
+  return sidebarSortKey(a).localeCompare(sidebarSortKey(b));
+}
+
+function sortSidebarItems(items) {
+  items.sort(compareSidebarItems);
+  for (const item of items) {
+    if (item.type === 'category' && item.items) {
+      sortSidebarItems(item.items);
+    }
+  }
+  return items;
+}
+
 async function sidebarItemsGenerator({ defaultSidebarItemsGenerator, ...args }) {
   const items = await defaultSidebarItemsGenerator(args);
-  return withIndexes(items, args.docs);
+  return withIndexes(sortSidebarItems(items), args.docs);
 }
 
 /** @type {import('@docusaurus/types').Config} */
@@ -59,7 +119,7 @@ const config = {
   url: site.url,
   baseUrl: site.baseUrl,
   trailingSlash: true,
-  staticDirectories: ['static'],
+  staticDirectories: site.staticDirectories,
   onBrokenLinks: 'warn',
   markdown: {
     format: 'detect',

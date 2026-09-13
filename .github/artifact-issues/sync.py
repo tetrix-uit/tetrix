@@ -33,6 +33,7 @@ TRELLO_LABEL_COLORS = {
     ))
 }
 IMPLEMENTATION_KINDS = {"implementation-plan", "task"}
+IGNORED_FOLDERS = ("versions",)
 
 
 def type_label(kind: str) -> str:
@@ -74,62 +75,55 @@ def is_feature_markdown(path: str) -> bool:
         len(parts) >= 4
         and parts[:2] == ["docs", "artifact"]
         and parts[2].startswith("feat-")
+        and parts[3] not in IGNORED_FOLDERS
         and path.endswith(".md")
     )
 
 
-def _standard_artifact(prefix: list[str], rest: list[str], full_path: str) -> Artifact | None:
-    feature = prefix[2]
-    feature_root = "/".join(prefix)
-    parent_root = feature_root + "/README.md"
+def _change_artifact(feature_root: str, change_root: str, rest: list[str], path: str) -> Artifact | None:
+    """Classify a path inside one change. The parent of a leaf is the master of the same folder."""
+    feature = feature_root.rsplit("/", 1)[-1]
+    change_summary = change_root + "/README.md"
     if rest == ["README.md"]:
-        return Artifact(full_path, "feature-summary", None, feature)
-    if rest == ["requirements", "README.md"]:
-        return Artifact(full_path, "master-requirement", parent_root, feature)
-    if len(rest) == 2 and rest[0] == "requirements" and rest[1].startswith("req-"):
-        return Artifact(full_path, "requirement", feature_root + "/requirements/README.md", feature)
-    if rest == ["specifications", "README.md"]:
-        return Artifact(full_path, "master-specification", parent_root, feature)
-    if len(rest) == 2 and rest[0] == "specifications" and rest[1].startswith("spec-"):
-        return Artifact(full_path, "specification", feature_root + "/specifications/README.md", feature)
-    if len(rest) == 2 and rest[0] == "decisions" and rest[1].startswith("adr-"):
-        related = related_specification(Path(full_path))
-        return Artifact(full_path, "decision", feature_root + f"/specifications/{related}.md", feature)
-    if rest == ["tasks", "README.md"]:
-        return Artifact(full_path, "implementation-plan", parent_root, feature)
-    if len(rest) == 2 and rest[0] == "tasks" and rest[1].startswith("task-"):
-        return Artifact(full_path, "task", feature_root + "/tasks/README.md", feature)
+        return Artifact(path, "change-summary", feature_root + "/README.md", feature)
+    if len(rest) != 2:
+        return None
+    folder, name = rest
+    master = f"{change_root}/{folder}/README.md"
+    if folder == "requirements":
+        if name == "README.md":
+            return Artifact(path, "master-requirement", change_summary, feature)
+        if name.startswith("req-"):
+            return Artifact(path, "requirement", master, feature)
+    if folder == "specifications":
+        if name == "README.md":
+            return Artifact(path, "master-specification", change_summary, feature)
+        if name.startswith("spec-"):
+            return Artifact(path, "specification", master, feature)
+    if folder == "decisions" and name.startswith("adr-"):
+        related = related_specification(Path(path))
+        return Artifact(path, "decision", f"{change_root}/specifications/{related}.md", feature)
+    if folder == "tasks":
+        if name == "README.md":
+            return Artifact(path, "implementation-plan", change_summary, feature)
+        if name.startswith("task-"):
+            return Artifact(path, "task", master, feature)
     return None
 
 
 def classify_artifact(path: str) -> Artifact | None:
     clean = Path(path).as_posix()
+    if not is_feature_markdown(clean):
+        return None
     parts = clean.split("/")
-    if len(parts) < 4 or parts[:2] != ["docs", "artifact"]:
-        return None
-    if not parts[2].startswith("feat-") or not clean.endswith(".md"):
-        return None
-    feature_prefix = parts[:3]
+    feature_root = "/".join(parts[:3])
     rest = parts[3:]
-    direct = _standard_artifact(feature_prefix, rest, clean)
-    if direct is not None:
-        return direct
+    if rest == ["README.md"]:
+        return Artifact(clean, "feature-summary", None, parts[2])
     if len(rest) < 3 or rest[0] != "changes" or not rest[1].startswith("change-"):
         return None
-    change_root = "/".join(feature_prefix + rest[:2])
-    change_rest = rest[2:]
-    if change_rest == ["README.md"]:
-        return Artifact(clean, "change-summary", "/".join(feature_prefix) + "/README.md", parts[2])
-    nested = _standard_artifact(feature_prefix, change_rest, clean)
-    if nested is None:
-        return None
-    parent = nested.parent
-    feature_root = "/".join(feature_prefix)
-    if change_rest in (["requirements", "README.md"], ["specifications", "README.md"], ["tasks", "README.md"]):
-        parent = change_root + "/README.md"
-    elif parent is not None:
-        parent = parent.replace(feature_root, change_root, 1)
-    return Artifact(clean, nested.kind, parent, nested.feature)
+    change_root = "/".join(parts[:5])
+    return _change_artifact(feature_root, change_root, rest[2:], clean)
 
 
 def related_specification(path: Path) -> str:
@@ -378,7 +372,7 @@ class GitHubAdapter:
             self.rest(
                 "POST",
                 f"/repos/{self.repository}/issues/{parent_number}/sub_issues",
-                {"sub_issue_id": child.id},
+                {"sub_issue_id": child.id, "replace_parent": True},
             )
 
 
@@ -644,10 +638,11 @@ class Synchronizer:
         changes = self.changed_files()
         unsupported = sorted(
             {
-                path
+                item["filename"]
                 for item in changes
-                for path in (item.get("filename", ""), item.get("previous_filename", ""))
-                if is_feature_markdown(path) and classify_artifact(path) is None
+                if item.get("status") != "removed"
+                and is_feature_markdown(item["filename"])
+                and classify_artifact(item["filename"]) is None
             }
         )
         if unsupported:

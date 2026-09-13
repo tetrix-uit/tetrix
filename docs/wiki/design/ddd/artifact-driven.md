@@ -5,17 +5,18 @@ artifact-driven documentation model. Read [Domain-Driven Design](README.md) for 
 [Artifact-Driven Documentation](../../documentation/artifact-driven/README.md) for the phases.
 
 The domain model in `docs/domain/` is shared by all features. A feature reads it, and the phase
-that owns a domain artifact updates it.
+that owns a domain artifact updates it. A change updates the domain artifacts in place, in the
+phase that owns them. A change to the context map is a decision.
 
 ## The phases
 
 | Phase | Owner | DDD step | Output |
 | --- | --- | --- | --- |
-| 1 Requirements | Requirement expert | Strategic design. Name the subdomain and its type. Find or make the bounded context. List the actors, the business events, and the terms. | `docs/domain/README.md`, `glossary.md`, `context-<name>/README.md` without the messages and the component. The section `## Domain` in `requirements/README.md`. |
-| 2 Specifications | Solution expert | Tactical design. Fill the messages and the component of each context. Write one aggregate canvas for each aggregate with its invariants, commands, events, and policies. Write the contracts between the contexts. Select the implementation pattern. | `context-<name>/agg-<name>.md`, `context-map.md`, `decisions/adr-<name>.md`. |
-| 3 Plan | Solution expert | One task touches one bounded context. Upstream before downstream. | `tasks/` with `**Context:**` on each task. |
+| 1 Requirements | Requirement expert | Strategic design. Name the subdomain and its type. Find or make the bounded context. List the actors, the business events, and the terms. | `docs/domain/README.md`, `glossary.md`, `context-<name>/README.md` without the messages and the component. The section `## Domain` in `changes/change-<name>/requirements/README.md`. |
+| 2 Specifications | Solution expert | Tactical design. Fill the messages and the component of each context. Write one aggregate canvas for each aggregate with its invariants, commands, events, and policies. Write the contracts between the contexts. Select the implementation pattern. | `context-<name>/agg-<name>.md`, `context-map.md`, `changes/change-<name>/decisions/adr-<name>.md`. |
+| 3 Plan | Solution expert | One task touches one bounded context. Upstream before downstream. | `changes/change-<name>/tasks/` with `**Context:**` on each task. |
 | 4 Implementation | Implementation experts | Code the model in `services/<name>/`. Keep the domain rules in the domain code, the use cases in the application code, and the adapters in the infrastructure code. | The code and the tests. |
-| 5 Change | The owner of the phase that changes | Update the domain artifacts that the change touches. A change to the context map is a decision. | `changes/change-<name>/` and the updated domain artifacts. |
+| 5 Version | Solution expert | No DDD step. The version copies the feature artifacts only. | `versions/<version>/` |
 
 ## How a feature artifact points to a domain artifact
 
