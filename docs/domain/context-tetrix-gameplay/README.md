@@ -2,6 +2,7 @@
 
 **Subdomain:** Tetrix gameplay
 **Type:** Core
+**Component:** apps/tetrix
 
 ## Purpose
 
@@ -27,6 +28,30 @@ and stack. It decides when full rows clear and how the speed rises.
 - A full row clears when a block lands, and each row above moves down.
 - The falling speed rises after each cleared line.
 
+## Inbound messages
+
+| Message | Kind | From |
+| --- | --- | --- |
+| Move falling block | command | Player |
+| Rotate falling block | command | Player |
+| Quit game | command | Player |
+
+## Outbound messages
+
+| Message | Kind | To |
+| --- | --- | --- |
+| Falling block landed | event | Player |
+| Full row cleared | event | Player |
+| Falling speed increased | event | Player |
+| Falling block rotated | event | Player |
+| Game quit | event | Player |
+| Game over | event | Player |
+
+## Aggregates
+
+- [agg-board](agg-board.md)
+- [agg-falling-piece](agg-falling-piece.md)
+
 ## Assumptions
 
 - The game lives in apps/tetrix per the user decision, not in services/<name> as the template
@@ -36,4 +61,4 @@ and stack. It decides when full rows clear and how the speed rises.
 
 ## Open questions
 
-- How much does the falling speed rise after each cleared line?
+- None. spec-speedup sets 50 ms per line with a 100 ms floor.
