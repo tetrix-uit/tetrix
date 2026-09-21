@@ -42,8 +42,11 @@ Do not add a second expert for a component that has one. To find the experts, re
 ## Rules
 
 - The expert owns phase 4 for its component.
-- The expert gives `spec-<name>.md` and `task-<name>.md` to the solution expert in phases 2
-  and 3. The expert does not write `specifications/README.md` or `tasks/README.md`.
+- The expert returns feasibility constraints only in phases 2 and 3. The expert does not author a
+  specification, a decision, or a task.
+- The expert calls no subagent. The expert directly tasks no expert. Each expert request goes
+  through the artifact master.
+- The expert does not write `specifications/README.md` or `tasks/README.md`.
 - The expert reads the tasks of a change and the current version of the feature. The expert
   does not write in `versions/`.
 - The expert does not write requirements.

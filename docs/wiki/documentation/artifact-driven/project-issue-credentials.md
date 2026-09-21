@@ -1,7 +1,10 @@
 # Project Issue Provider Credentials
 
-Use this procedure to add credentials for GitHub Projects or Trello. The generated workflow reads
-the credentials from GitHub Actions repository secrets.
+Use this procedure to add credentials for GitHub Projects or Trello. The generated GitHub
+workflow reads the credentials from GitHub Actions repository secrets. The generated Azure
+pipeline reads the same credential names from Azure Pipelines secret variables. Each credential
+name maps one to one onto an Azure secret variable with the same name. The Telegram chat ID stays
+a plain variable.
 
 ## Before you start
 
@@ -118,6 +121,30 @@ generated workflow reads repository secrets with these default names.
    unset TRELLO_API_KEY TRELLO_TOKEN
    ```
 
+## Set up Azure Pipelines secret variables
+
+Do this procedure when `factory.domain.ci-cd.provider.use` is `"azure-pipelines"`. First
+complete the GitHub Projects or Trello procedure to create the tokens. Then store each token in
+Azure with the same name. The adapter code is CI-independent. The pipeline runs the same
+synchronizer and notifier as the GitHub workflow.
+
+1. Open the Azure DevOps project that builds the repository.
+2. Open **Pipelines > Library** and make a variable group, or open the pipeline and select
+   **Variables**.
+3. Add one variable for each configured credential name. The names include the project provider
+   secrets and the notification webhook secrets. If you configured other secret names, use those
+   configured names.
+4. Mark each mapped variable as secret. A secret variable hides its value in the pipeline log.
+   The pipeline cannot read a secret variable that is not marked as secret.
+5. Make a GitHub personal access token with the `repo` scope. GitHub Actions supplies
+   `GITHUB_TOKEN` automatically, but Azure Pipelines does not. The pipeline uses this token to
+   read merged pull request files and to write the managed pull request comment.
+6. Add the token as a secret variable named `GITHUB_TOKEN`.
+7. Add the Telegram chat ID as a plain variable named `ARTIFACT_NOTIFICATION_TELEGRAM_CHAT_ID`
+   when Telegram notification is enabled. Do not mark the chat ID as secret.
+
+Check that each name matches the configured secret name exactly, including upper and lower case.
+
 ## Set up an acceptance notification
 
 Select one or more notification providers in the Factory configuration:
@@ -198,9 +225,16 @@ Run the manual full scan after you configure the provider target and its reposit
 
 1. Start the generated workflow.
 
-   ```bash
-   gh workflow run accepted-artifact-issues.yml --repo OWNER/REPOSITORY
-   ```
+    ```bash
+    gh workflow run accepted-artifact-issues.yml --repo OWNER/REPOSITORY
+    ```
+
+    For Azure Pipelines, select the `accepted-artifact-issues` pipeline and select **Run
+    pipeline**, or run:
+
+    ```bash
+    az pipelines run --name accepted-artifact-issues
+    ```
 
 2. Get the identifier of the latest manual run.
 
@@ -218,7 +252,8 @@ Run the manual full scan after you configure the provider target and its reposit
 ## Rotate or revoke credentials
 
 Create a replacement token before an expiring token stops. Write the replacement to the same
-repository secret name. GitHub Actions uses the new value on the next run.
+repository secret name. GitHub Actions uses the new value on the next run. For Azure Pipelines,
+write the replacement to the Azure secret variable with the same name.
 
 Revoke an unused or exposed GitHub token in **GitHub settings > Developer settings > Personal
 access tokens**. Revoke an unused or exposed Trello token in the Trello account applications page.

@@ -5,31 +5,29 @@ description: Coordinate one artifact-driven change phase by phase with Plan-Pn t
 
 # Artifact Master
 
-You are the artifact-driven coordinator. You own coordination only. You own no content.
-
 ## When to use
 
-Use this skill when the user wants to start, continue, or finish an artifact-driven change
-and wants each phase planned before it is built. Do not use it to write requirements,
-specifications, tasks, decisions, code, or versions yourself.
+Use this skill when the user wants to start, continue, or finish an artifact-driven change.
 
 ## Procedure
 
-1. Load the `artifact-master` role of the harness in use:
-   - `.opencode/agents/artifact-master.md` for `opencode` (selectable mode).
-   - `.claude/agents/artifact-master.md` for `claude` (delegated subagent).
-   - `.codex/agents/artifact-master.toml` for `codex` (delegated subagent).
-2. Follow its `Procedure: Plan-Pn then Build-Pn`. Do one phase at a time.
-3. For Plan-Pn, stay read-only and wait for user approval.
-4. For Build-Pn, delegate to the owning expert:
-   - Phase 1 goes to the requirement expert.
-   - Phases 2, 3, and 5 go to the solution expert.
-   - Phase 4 has no plan. It builds the approved tasks with the implementation expert
-     of each component.
-5. Use the committed output of Pn as the only input of Pn+1.
+1. Load the rendered `artifact-master` role before you coordinate a change.
+   - OpenCode: `.opencode/agents/artifact-master.md` (selectable coordinator role).
+   - Claude: `.claude/agents/artifact-master.md` (delegated role).
+   - Codex: `.codex/agents/artifact-master.toml` (delegated role).
+2. In OpenCode, tell the user to select `artifact-master` as the primary agent before
+   coordination starts. It is the only role that starts an expert.
+3. Use the role procedure: `Plan-Pn then Build-Pn`. Do one phase at a time.
+4. Keep each plan read-only. Wait for explicit user approval before its build.
+5. Route phase 1 to the requirement expert. Route phases 2 and 3 to the solution expert. Route
+   phase 5 to the artifact release expert after the solution expert confirms readiness.
+6. Route phase 4 tasks to the implementation expert of each component. Ask the solution expert
+   for owner advice when a component has no implementation expert. Select the owner.
+7. Do not make Plan-P4. Use the approved phase 3 implementation plan as the Phase 4 gate.
+8. Use the committed output of Pn as the input of Pn+1.
 
 ## Rules
 
-- Do not copy the role body here. The role file is the source of the coordination rules.
+- The rendered role is the source of the coordination and message contract.
+- Do not copy the role body into this skill.
 - Do not write phase content yourself. Delegate it.
-- Keep no status field and no phase-tracking field in any file.

@@ -16,7 +16,7 @@ phase that owns them. A change to the context map is a decision.
 | 2 Specifications | Solution expert | Tactical design. Fill the messages and the component of each context. Write one aggregate canvas for each aggregate with its invariants, commands, events, and policies. Write the contracts between the contexts. Select the implementation pattern. | `context-<name>/agg-<name>.md`, `context-map.md`, `changes/change-<name>/decisions/adr-<name>.md`. |
 | 3 Plan | Solution expert | One task touches one bounded context. Upstream before downstream. | `changes/change-<name>/tasks/` with `**Context:**` on each task. |
 | 4 Implementation | Implementation experts | Code the model in `services/<name>/`. Keep the domain rules in the domain code, the use cases in the application code, and the adapters in the infrastructure code. | The code and the tests. |
-| 5 Version | Solution expert | No DDD step. The version copies the feature artifacts only. | `versions/<version>/` |
+| 5 Version | Artifact release expert | No DDD step. The artifact release expert copies the feature artifacts only. The solution expert confirms readiness. | `versions/<version>/` |
 
 ## How a feature artifact points to a domain artifact
 

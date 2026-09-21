@@ -1,7 +1,10 @@
 # Accepted Artifact Issues
 
-The repository is the source of truth for feature artifacts. GitHub Actions makes project issues
-only after an artifact pull request merges.
+The repository is the source of truth for feature artifacts. The selected CI system makes project
+issues only after an artifact pull request merges. `github-actions` runs the GitHub workflow
+`.github/workflows/accepted-artifact-issues.yml`. `azure-pipelines` runs the Azure pipeline
+`azure-pipelines/accepted-artifact-issues.yml`. Both CI systems run the same synchronizer, the
+same notifier, and the same configuration.
 
 ## Lifecycle
 
@@ -50,7 +53,7 @@ names in the selected project-management adapter. Then enable the project-issues
 factory = {
   domain = {
     documentation.use = "artifact-driven";
-    ci-cd.provider.use = "github-actions";
+    ci-cd.provider.use = "github-actions"; # or "azure-pipelines"
     project-management.provider = {
       use = "github-projects";
       github-projects = {
@@ -84,8 +87,24 @@ Set `notification.uses` to the required providers. The supported providers are `
 files to the repository.
 
 Use the [provider credential guide](project-issue-credentials.md) to make an incoming webhook and
-add its URL as a repository secret. The notification includes added, updated, renamed, and
+add its URL as a repository secret, or as an Azure secret variable with the same name. The notification includes added, updated, renamed, and
 withdrawn artifacts. Manual scans and pull requests without artifact changes send no notification.
+
+## GitHub Actions setup
+
+Use the [provider credential guide](project-issue-credentials.md) to create and store the token.
+GitHub supplies `GITHUB_TOKEN` for repository issues and comments. Do not add this secret.
+
+## Azure Pipelines setup
+
+Use the [provider credential guide](project-issue-credentials.md) to create the same credential
+names as Azure secret variables. The pipeline maps each name one to one onto an Azure secret
+variable with the same name. Mark each mapped variable as secret. The pipeline checks out the
+merge commit on the default branch. It never runs content from an unmerged pull request. A manual
+run scans the complete artifact tree for setup and recovery. It sends no notification.
+
+The adapter code is CI-independent. The pipeline runs the same `sync.py`, `notify.py`, and
+`config.json` as the GitHub workflow.
 
 ## GitHub Projects setup
 

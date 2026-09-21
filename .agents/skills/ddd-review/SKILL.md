@@ -77,4 +77,5 @@ Set `Owner: solution expert` for a phase 2 or phase 3 finding.
 - Do not choose a domain model or make a domain decision.
 - Do not move phase ownership.
 - The requirement expert owns phase 1.
-- The solution expert owns phases 2, 3, and 5.
+- The solution expert owns phases 2 and 3.
+- The artifact release expert owns phase 5.
