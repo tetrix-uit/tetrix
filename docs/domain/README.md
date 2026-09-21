@@ -11,6 +11,7 @@ This directory contains the domain model of the project. Read
 
 | Subdomain | Type | Bounded context | Why this type |
 | --- | --- | --- | --- |
+| Tetrix gameplay | Core | [context-tetrix-gameplay](context-tetrix-gameplay/README.md) | The gameplay is the product and the team writes custom code for it. |
 
 ## Artifacts
 

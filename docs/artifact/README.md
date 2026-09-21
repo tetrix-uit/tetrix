@@ -9,3 +9,4 @@ before you add or change a feature.
 | Feature | Summary |
 | --- | --- |
 | [feat-latex-report-authoring](feat-latex-report-authoring/README.md) | Lets project contributors write and compile LaTeX reports with XeLaTeX. |
+| [feat-tetrix](feat-tetrix/README.md) | Lets players play the Tetrix falling-block game in apps/tetrix. |
