@@ -98,6 +98,21 @@
   \end{tikzpicture}%
 }
 
+% Chữ ký tay cách điệu cho Phạm Minh Tuấn
+\newcommand{\signatureTuan}{%
+  \begin{tikzpicture}[scale=0.48, baseline=-0.22cm, color=linkblue, line cap=round, line join=round]
+    \draw[line width=1.3pt] (0.1, 0.95) to[out=30, in=175] (1.05, 1.15) to[out=-5, in=155] (1.85, 1.0);
+    \draw[line width=1.2pt] (1.05, 1.15) to[out=-100, in=85] (0.8, -0.15) to[out=-95, in=180] (1.15, -0.35) to[out=0, in=-100] (1.45, 0.1);
+    \draw[line width=1.0pt] (1.45, 0.4) to[out=-100, in=180] (1.55, 0.05) to[out=0, in=-110] (1.95, 0.4) to[out=-90, in=180] (2.1, 0.05) to[out=0, in=-140] (2.35, 0.2);
+    \draw[line width=1.0pt] (2.35, 0.2) to[out=70, in=130] (2.7, 0.4) to[out=-50, in=60] (2.7, 0.05) to[out=-130, in=-70] (2.35, 0.2);
+    \draw[line width=1.0pt] (2.75, 0.4) to[out=-90, in=180] (2.85, 0.05) to[out=0, in=-110] (3.1, 0.35) to[out=-90, in=-100] (3.15, 0.05) to[out=75, in=135] (3.5, 0.35) to[out=-45, in=180] (3.75, 0.1) to[out=0, in=-150] (4.0, 0.25);
+    \draw[line width=0.9pt] (2.4, 0.65) -- (2.6, 0.82) -- (2.8, 0.65);
+    \draw[line width=0.9pt] (2.75, 0.95) to[out=45, in=-140] (2.98, 1.15);
+    \draw[line width=1.4pt] (0.3, -0.5) to[out=-10, in=190] (4.3, -0.4) to[out=10, in=-140] (4.8, -0.1);
+    \fill (4.95, -0.08) circle (1.3pt);
+  \end{tikzpicture}%
+}
+
 \begin{document}
 
 % ----------------------------------------------------------------
@@ -260,7 +275,7 @@ Các thành viên xác nhận đã đọc, thống nhất và cam kết thực h
     Nguyễn Trọng Khương & Đồng ý & \signatureKhuong & 10/09/2026 \\
     Trần Minh Lợi & Đồng ý & & 10/09/2026 \\
     Dương Quang Minh & Đồng ý & & 10/09/2026 \\
-    Phạm Minh Tuấn & Đồng ý & & 10/09/2026 \\
+    Phạm Minh Tuấn & Đồng ý & \signatureTuan & 10/09/2026 \\
     \bottomrule
   \end{tabularx}
 \end{table}
