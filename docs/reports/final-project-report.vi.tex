@@ -75,6 +75,29 @@
   \end{tikzpicture}%
 }
 
+% Chữ ký tay cách điệu cho Trần Minh Hiếu
+\newcommand{\signatureHieu}{%
+  \begin{tikzpicture}[scale=0.48, baseline=-0.22cm, color=linkblue, line cap=round, line join=round]
+    % Thân chữ H lớn uốn lượn phong cách chữ ký
+    \draw[line width=1.3pt] (0.1, 1.1) to[out=-75, in=95] (0.2, 0.0) to[out=-85, in=175] (0.5, -0.35) to[out=-5, in=-95] (0.65, -0.05);
+    % Nét phải chữ H vút đứng
+    \draw[line width=1.2pt] (1.0, 1.15) to[out=-80, in=85] (0.9, 0.15) to[out=-55, in=175] (1.2, -0.15);
+    % Nét ngang chữ H nối sang chữ i
+    \draw[line width=1.1pt] (0.2, 0.5) to[out=5, in=180] (0.9, 0.55) to[out=45, in=115] (1.45, 1.05);
+    % Chữ i móc và chấm
+    \draw[line width=1.0pt] (1.45, 1.05) to[out=-75, in=90] (1.38, 0.05) to[out=75, in=140] (1.62, 0.35) to[out=-35, in=170] (1.85, 0.1);
+    \fill (1.45, 1.25) circle (1.1pt);
+    % Chữ ê uốn vòng thắt
+    \draw[line width=1.0pt] (1.85, 0.1) to[out=50, in=120] (2.15, 0.35) to[out=-60, in=60] (2.15, 0.05) to[out=-120, in=-60] (1.88, 0.12);
+    \draw[line width=0.9pt] (2.0, 0.55) to[out=20, in=150] (2.25, 0.62);
+    % Chữ u lướt sóng nhanh
+    \draw[line width=1.0pt] (2.15, 0.05) to[out=0, in=-110] (2.4, 0.35) to[out=-65, in=180] (2.65, 0.1) to[out=25, in=160] (3.0, 0.25);
+    % Nét gạch chân chữ ký phóng khoáng vút dài và chấm dứt khoát
+    \draw[line width=1.4pt] (0.3, -0.5) to[out=-10, in=190] (4.3, -0.4) to[out=10, in=-140] (4.8, -0.1);
+    \fill (4.95, -0.08) circle (1.3pt);
+  \end{tikzpicture}%
+}
+
 \begin{document}
 
 % ----------------------------------------------------------------
@@ -233,7 +256,7 @@ Các thành viên xác nhận đã đọc, thống nhất và cam kết thực h
     \toprule
     \textbf{Họ và tên} & \textbf{Xác nhận} & \textbf{Ký tên} & \textbf{Ngày} \\
     \midrule
-    Trần Minh Hiếu & Đồng ý &  & 10/09/2026 \\
+    Trần Minh Hiếu & Đồng ý & \signatureHieu & 10/09/2026 \\
     Nguyễn Trọng Khương & Đồng ý & \signatureKhuong & 10/09/2026 \\
     Trần Minh Lợi & Đồng ý & & 10/09/2026 \\
     Dương Quang Minh & Đồng ý & & 10/09/2026 \\
