@@ -4,7 +4,7 @@
 using namespace std;
 #define H 20
 #define W 15
-char board[H][W] = {};
+char board[H][W] = {}; // ' ' = empty, '#' = wall, letter = stacked block
 
 int x, y, b;
 char blocks[][4][4] = {{{' ', 'I', ' ', ' '},
@@ -112,11 +112,11 @@ void draw() {
       cout << board[i][j];
 }
 int main() {
+  initBoard();
   srand(time(0));
   x = 5;
   y = 0;
   b = rand() % 7;
-  initBoard();
   while (1) {
     boardDelBlock();
     if (kbhit()) {
