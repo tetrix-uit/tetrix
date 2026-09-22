@@ -2,9 +2,11 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-#include <termios.h>
 #include <thread>
+#ifndef TETRIX_TEST
+#include <termios.h>
 #include <unistd.h>
+#endif
 
 using namespace std;
 #define H 20
@@ -15,7 +17,8 @@ int x, y, b;
 int delayMs = 500; // Fall delay in milliseconds per spec-speedup.
 // Index 0=I, 1=O, 2=T, 3=S, 4=Z, 5=J, 6=L.
 // ' ' = empty cell, letter = filled cell.
-char blocks[7][4][4] = {{{' ', ' ', ' ', ' '},
+const char initialBlocks[7][4][4] = {
+                        {{' ', ' ', ' ', ' '},
                          {'I', 'I', 'I', 'I'},
                          {' ', ' ', ' ', ' '},
                          {' ', ' ', ' ', ' '}},
@@ -44,6 +47,53 @@ char blocks[7][4][4] = {{{' ', ' ', ' ', ' '},
                          {'L', 'L', 'L', ' '},
                          {' ', ' ', ' ', ' '}}};
 
+class Blocks {
+public:
+  char shape[4][4];
+  explicit Blocks(const char initial[4][4]) {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        initialShape[i][j] = initial[i][j];
+    reset();
+  }
+  virtual ~Blocks() = default;
+  void reset() {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        shape[i][j] = initialShape[i][j];
+  }
+  virtual void rotatedShape(char out[4][4]) const = 0;
+
+private:
+  char initialShape[4][4];
+};
+
+class RotatingBlocks : public Blocks {
+public:
+  using Blocks::Blocks;
+  void rotatedShape(char out[4][4]) const override {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        out[i][j] = shape[3 - j][i];
+  }
+};
+
+class SquareBlocks : public Blocks {
+public:
+  using Blocks::Blocks;
+  void rotatedShape(char out[4][4]) const override {
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        out[i][j] = shape[i][j];
+  }
+};
+
+RotatingBlocks blockI(initialBlocks[0]), blockT(initialBlocks[2]),
+    blockS(initialBlocks[3]), blockZ(initialBlocks[4]),
+    blockJ(initialBlocks[5]), blockL(initialBlocks[6]);
+SquareBlocks blockO(initialBlocks[1]);
+Blocks* blocks[7] = {&blockI, &blockO, &blockT, &blockS, &blockZ, &blockJ, &blockL};
+
 bool canPlace(char grid[4][4], int px, int py) {
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
@@ -61,21 +111,33 @@ bool canPlace(char grid[4][4], int px, int py) {
 }
 
 bool canMove(int dx, int dy) {
-  return canPlace(blocks[b], x + dx, y + dy);
+  return canPlace(blocks[b]->shape, x + dx, y + dy);
 }
 
 bool spawnBlockOk() {
   x = 5;
   y = 0;
   b = rand() % 7;
-  return canPlace(blocks[b], x, y);
+  blocks[b]->reset();
+  return canPlace(blocks[b]->shape, x, y);
 }
 
 void spawnBlock() {
   spawnBlockOk();
 }
-// Stub: task-rotate completes the w wiring.
-bool tryRotate() { return false; }
+bool tryRotate() {
+  char turned[4][4];
+  blocks[b]->rotatedShape(turned);
+  if (!canPlace(turned, x, y))
+    return false;
+  for (int i = 0; i < 4; ++i)
+    for (int j = 0; j < 4; ++j)
+      blocks[b]->shape[i][j] = turned[i][j];
+  const char shapeNames[] = "IOTSZJL";
+  cout << "Falling block rotated { shape: " << shapeNames[b]
+       << ", x: " << x << ", y: " << y << " }\n";
+  return true;
+}
 
 // Stub: task-line-clear completes the lock-step call.
 int removeLine() { return 0; }
@@ -83,13 +145,13 @@ int removeLine() { return 0; }
 void block2Board() {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
-      if (blocks[b][i][j] != ' ')
-        board[y + i][x + j] = blocks[b][i][j];
+      if (blocks[b]->shape[i][j] != ' ')
+        board[y + i][x + j] = blocks[b]->shape[i][j];
 }
 void boardDelBlock() {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
-      if (blocks[b][i][j] != ' ')
+      if (blocks[b]->shape[i][j] != ' ')
         board[y + i][x + j] = ' ';
 }
 void initBoard() {
@@ -108,6 +170,7 @@ void draw() {
       cout << board[i][j];
 }
 
+#ifndef TETRIX_TEST
 // Non-blocking key read via POSIX termios. Returns true and sets c when a key
 // is present.
 bool pollKey(char &c) {
@@ -175,3 +238,4 @@ int main() {
   }
   return 0;
 }
+#endif
