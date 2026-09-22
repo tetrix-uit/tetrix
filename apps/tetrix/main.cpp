@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
@@ -14,7 +15,8 @@ using namespace std;
 char board[H][W] = {}; // ' ' = empty, '#' = wall, letter = stacked block
 
 int x, y, b;
-int delayMs = 500; // Fall delay in milliseconds per spec-speedup.
+int delayMs = 500;      // Fall delay in milliseconds per spec-speedup.
+int clearedTotal = 0;   // Total count of cleared lines in this game.
 // Index 0=I, 1=O, 2=T, 3=S, 4=Z, 5=J, 6=L.
 // ' ' = empty cell, letter = filled cell.
 const char initialBlocks[7][4][4] = {
@@ -169,6 +171,17 @@ int removeLine() {
   return clearedRows;
 }
 
+// Shortens the fall delay by 50 ms per cleared line, floored at 100 ms. A
+// count of 0 changes no delay and fires no event.
+void applySpeedup(int clearedRows) {
+  if (clearedRows <= 0)
+    return;
+  clearedTotal += clearedRows;
+  delayMs = max(100, 500 - 50 * clearedTotal);
+  cout << "Falling speed increased { clearedTotal: " << clearedTotal
+       << ", delayMs: " << delayMs << " }\n";
+}
+
 void block2Board() {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
@@ -254,7 +267,7 @@ int main() {
     else {
       block2Board();
       int clearedRows = removeLine();
-      (void)clearedRows; // Consumed by task-speedup.
+      applySpeedup(clearedRows);
       cout << "Falling block landed" << endl;
       if (!spawnBlockOk()) {
         draw();
