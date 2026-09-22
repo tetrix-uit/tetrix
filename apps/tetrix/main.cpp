@@ -139,8 +139,35 @@ bool tryRotate() {
   return true;
 }
 
-// Stub: task-line-clear completes the lock-step call.
-int removeLine() { return 0; }
+// Scans rows H-2..1 for a full inner row, removes it, and drops the rows
+// above by one per removed row. Re-checks the same row index after a removal
+// since the row shifted into that slot may itself be full.
+int removeLine() {
+  int clearedRows = 0;
+  int i = H - 2;
+  while (i >= 1) {
+    bool full = true;
+    for (int j = 1; j <= W - 2; j++) {
+      if (board[i][j] == ' ') {
+        full = false;
+        break;
+      }
+    }
+    if (full) {
+      for (int k = i; k > 1; k--)
+        for (int j = 1; j <= W - 2; j++)
+          board[k][j] = board[k - 1][j];
+      for (int j = 1; j <= W - 2; j++)
+        board[1][j] = ' ';
+      clearedRows++;
+    } else {
+      i--;
+    }
+  }
+  if (clearedRows > 0)
+    cout << "Full row cleared { clearedRows: " << clearedRows << " }\n";
+  return clearedRows;
+}
 
 void block2Board() {
   for (int i = 0; i < 4; i++)
@@ -224,7 +251,8 @@ int main() {
       y++;
     else {
       block2Board();
-      removeLine();
+      int clearedRows = removeLine();
+      (void)clearedRows; // Consumed by task-speedup.
       cout << "Falling block landed" << endl;
       if (!spawnBlockOk()) {
         draw();
