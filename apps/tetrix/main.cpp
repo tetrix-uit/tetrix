@@ -189,12 +189,14 @@ void initBoard() {
       else
         board[i][j] = ' ';
 }
+// Draws each well cell as two text columns so the border and the blocks
+// look square: wall -> "##", block -> letter + letter, empty -> two spaces.
 void draw() {
   cout << "\033[2J\033[H";
 
   for (int i = 0; i < H; i++, cout << endl)
     for (int j = 0; j < W; j++)
-      cout << board[i][j];
+      cout << board[i][j] << board[i][j];
 }
 
 #ifndef TETRIX_TEST
