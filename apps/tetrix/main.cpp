@@ -1,5 +1,10 @@
-#include <conio.h>
+#include <chrono>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
+#include <termios.h>
+#include <thread>
+#include <unistd.h>
 
 using namespace std;
 #define H 20
@@ -7,6 +12,7 @@ using namespace std;
 char board[H][W] = {}; // ' ' = empty, '#' = wall, letter = stacked block
 
 int x, y, b;
+int delayMs = 500; // Fall delay in milliseconds per spec-speedup.
 // Index 0=I, 1=O, 2=T, 3=S, 4=Z, 5=J, 6=L.
 // ' ' = empty cell, letter = filled cell.
 char blocks[7][4][4] = {{{' ', ' ', ' ', ' '},
@@ -68,6 +74,12 @@ bool spawnBlockOk() {
 void spawnBlock() {
   spawnBlockOk();
 }
+// Stub: task-rotate completes the w wiring.
+bool tryRotate() { return false; }
+
+// Stub: task-line-clear completes the lock-step call.
+int removeLine() { return 0; }
+
 void block2Board() {
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
@@ -89,12 +101,37 @@ void initBoard() {
         board[i][j] = ' ';
 }
 void draw() {
-  system("cls");
+  cout << "\033[2J\033[H";
 
   for (int i = 0; i < H; i++, cout << endl)
     for (int j = 0; j < W; j++)
       cout << board[i][j];
 }
+
+// Non-blocking key read via POSIX termios. Returns true and sets c when a key
+// is present.
+bool pollKey(char &c) {
+  termios oldt;
+  termios newt;
+  bool hasTermios = tcgetattr(STDIN_FILENO, &oldt) == 0;
+  if (hasTermios) {
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    newt.c_cc[VMIN] = 0;
+    newt.c_cc[VTIME] = 0;
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt); // Setup.
+  }
+  char ch = 0;
+  bool got = read(STDIN_FILENO, &ch, 1) == 1;
+  if (hasTermios)
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt); // Restore.
+  if (got) {
+    c = ch;
+    return true;
+  }
+  return false;
+}
+
 int main() {
   initBoard();
   srand(time(0));
@@ -103,23 +140,29 @@ int main() {
     cout << "Game over" << endl;
     return 0;
   }
-  while (1) {
+  while (true) {
     boardDelBlock();
-    if (kbhit()) {
-      char c = getch();
+    char c = 0;
+    if (pollKey(c)) {
       if (c == 'a' && canMove(-1, 0))
         x--;
-      if (c == 'd' && canMove(1, 0))
+      else if (c == 'd' && canMove(1, 0))
         x++;
-      if (c == 'x' && canMove(0, 1))
+      else if (c == 'x' && canMove(0, 1))
         y++;
-      if (c == 'q')
+      else if (c == 'w')
+        tryRotate();
+      else if (c == 'q') {
+        cout << "Game quit" << endl;
         break;
+      }
     }
     if (canMove(0, 1))
       y++;
     else {
       block2Board();
+      removeLine();
+      cout << "Falling block landed" << endl;
       if (!spawnBlockOk()) {
         draw();
         cout << "Game over" << endl;
@@ -128,7 +171,7 @@ int main() {
     }
     block2Board();
     draw();
-    _sleep(500);
+    std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
   }
   return 0;
 }

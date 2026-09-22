@@ -40,8 +40,8 @@ Loop order per frame:
    via `tryRotate()` per spec-rotate. `q` ends the game.
 4. Move the shape down by one row if `canMove(0, 1)` returns true.
 5. Else lock the shape: call `block2Board()`, then clear lines per
-   spec-line-clear, then call `spawnBlock()` per spec-blocks. If
-   `spawnBlock()` returns false, draw the last well state and end the game
+   spec-line-clear, then call `spawnBlockOk()` per spec-blocks. If
+   `spawnBlockOk()` returns false, draw the last well state and end the game
    with `Game over`.
 6. Write the shape with `block2Board()`, call `draw()`, wait `delayMs`
    per spec-speedup.
@@ -50,7 +50,7 @@ Events:
 
 - `Falling block landed` after the lock step.
 - `Game quit` after the `q` key.
-- `Game over` when `spawnBlock()` returns false.
+- `Game over` when `spawnBlockOk()` returns false.
 
 ## Errors
 
