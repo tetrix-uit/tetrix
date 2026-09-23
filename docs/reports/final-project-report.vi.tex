@@ -190,7 +190,18 @@
 
 \subsection{Mục tiêu và phạm vi làm việc}
 
-\textbf{Mục tiêu cụ thể của nhóm:}
+\textbf{Mục tiêu cụ thể của nhóm:} hoàn thành trò chơi Tetrix chạy trên terminal
+bằng C++17 theo đúng yêu cầu đề bài, đồng thời áp dụng một quy trình làm việc
+chuyên nghiệp để mọi phần việc đều truy vết được.
+
+\textbf{Phạm vi làm việc:}
+
+\begin{itemize}
+  \item Trong phạm vi: bàn chơi có viền, bảy loại khối, khối rơi theo thời gian,
+        di chuyển và thoát, xóa hàng đầy, hiển thị ô vuông, xoay khối và tăng tốc
+        sau mỗi hàng đã xóa.
+  \item Ngoài phạm vi: âm thanh, lưu điểm, menu và chơi qua mạng.
+\end{itemize}
 
 \subsection{Thành viên và phân công trách nhiệm}
 
@@ -198,44 +209,136 @@
   \centering
   \small
   \caption{Danh sách thành viên và phân công}
-  \begin{tabularx}{\textwidth}{P{2.3cm} P{3.3cm} P{2.8cm} Y}
+  \begin{tabularx}{\textwidth}{P{2.2cm} P{2.9cm} P{3.2cm} Y}
     \toprule
     \textbf{MSSV} & \textbf{Họ và tên} & \textbf{Vai trò} & \textbf{Trách nhiệm chính} \\
     \midrule
-    26730021 & Trần Minh Hiếu & Leader / Editor & Quản lý tiến độ, điều phối nhóm, thiết lập quy trình làm việc và biên tập báo cáo \\
-    26730037 & Nguyễn Trọng Khương & Member / Developer & Lập trình các tính năng game chính, phối hợp thiết kế kiến trúc và viết báo cáo \\
+    26730021 & Trần Minh Hiếu & Project Manager - Technical Leader & Quản lý tiến độ, điều phối nhóm, thiết lập quy trình SDLC và CI/CD; hiện thực \texttt{task-falling} (vòng lặp game và điều khiển); biên tập báo cáo. \\
+    26730037 & Nguyễn Trọng Khương & Project Owner & Hiện thực \texttt{task-screen} và \texttt{task-block-shapes} (bàn chơi và các lớp khối đa hình); phối hợp thiết kế kiến trúc; viết báo cáo. \\
+    26730044 & Trần Minh Lợi & Tester & Hiện thực \texttt{task-line-clear}, \texttt{task-square-ui} và \texttt{task-speedup}; kiểm thử và review chéo. \\
+    26730047 & Dương Quang Minh & Application Developer & Hiện thực \texttt{change-split-modules} (lớp \texttt{Input} và \texttt{Renderer}); nghiên cứu cách chơi; rà soát tài liệu. \\
+    26730079 & Phạm Minh Tuấn & Application Developer & Hiện thực \texttt{task-rotate} (\texttt{tryRotate} và unit test); viết đặc tả xoay và nghiên cứu tính năng. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Nhiệm vụ của từng thành viên}
+
+Bảng dưới đây tổng hợp nhiệm vụ của từng thành viên theo tác giả commit trên git.
+Cột \textbf{Feature/Task} là task trong implementation plan; cột \textbf{Lớp/Hàm}
+là phần mã nguồn chính; cột \textbf{Commit} là các commit tiêu biểu.
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{Nhiệm vụ của từng thành viên theo commit trên git}
+  \begin{tabularx}{\textwidth}{P{2.3cm} P{2.3cm} P{3.0cm} Y P{1.7cm}}
+    \toprule
+    \textbf{Thành viên} & \textbf{Feature/Task} & \textbf{Lớp/Hàm} & \textbf{Tính năng} & \textbf{Commit} \\
+    \midrule
+    Trần Minh Hiếu & \texttt{task-falling}; hạ tầng quy trình & Vòng lặp \texttt{main}, \texttt{canMove}, \texttt{block2Board}, \texttt{spawnBlockOk}, \texttt{pollKey} & Khối rơi theo timer; di chuyển trái/phải/xuống; khóa khối và thoát; dựng quy trình SDLC, CI/CD, Docusaurus và báo cáo. & \texttt{bc3e28e}, \texttt{d3086c5} \\
+    Nguyễn Trọng Khương & \texttt{task-screen}, \texttt{task-\-block-\-shapes} & \texttt{initBoard}, \texttt{draw}, lớp \texttt{Blocks}, \texttt{RotatingBlocks}, \texttt{SquareBlocks} & Bàn chơi có viền 20x15; bảy loại khối và quy tắc sinh khối. & \texttt{fec63e8}, \texttt{1901cf6} \\
+    Trần Minh Lợi & \texttt{task-\-line-\-clear}, \texttt{task-\-square-\-ui}, \texttt{task-speedup} & \texttt{removeLine}, \texttt{applySpeedup}, phần vẽ ô vuông trong \texttt{draw} & Xóa hàng đầy và dồn hàng trên; hiển thị ô vuông; giảm độ trễ 50 ms mỗi hàng, sàn 100 ms. & \texttt{58cda2c}, \texttt{7a3fa6f}, \texttt{9211311} \\
+    Dương Quang Minh & \texttt{change-\-split-\-modules}, \texttt{task-\-line-\-clear} (tài liệu) & Lớp \texttt{Input}, lớp \texttt{Renderer} & Tách đọc phím termios và vẽ bàn chơi thành class; rà soát tài liệu task-line-clear; chữ ký báo cáo. & \texttt{dc5dd04}, \texttt{46a8e54} \\
+    Phạm Minh Tuấn & \texttt{task-rotate} & \texttt{tryRotate}, lớp \texttt{RotatingBlocks}, \path{tests/test_rotate.cpp} & Xoay khối 90 độ với kiểm tra tường và va chạm; unit test cho xoay. & \texttt{603064f}, \texttt{559b224} \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
 \subsection{Công cụ và không gian làm việc}
 
-Theo yêu cầu đề bài, nhóm tạo một channel trên Slack để trao đổi. Nhóm có thể
-sử dụng thêm Trello để quản lý công việc và Overleaf để cùng soạn báo cáo.
+Theo yêu cầu đề bài, nhóm tạo một channel trên Slack để trao đổi. Nhóm dùng thêm
+Trello để quản lý công việc và GitHub để lưu mã nguồn, tài liệu và báo cáo.
 
 \begin{table}[H]
   \centering
   \small
   \caption{Các công cụ nhóm sử dụng}
-  \begin{tabularx}{\textwidth}{P{2.4cm} P{3.4cm} Y P{4.0cm}}
+  \begin{tabularx}{\textwidth}{P{3.1cm} P{3.2cm} Y P{3.5cm}}
     \toprule
     \textbf{Công cụ} & \textbf{Mục đích} & \textbf{Cách sử dụng} & \textbf{Liên kết} \\
     \midrule
     Slack & Trao đổi chính thức & Đặt câu hỏi, thông báo và quyết định; phản hồi trong vòng 24 giờ & \url{https://ss004f31.slack.com/archives/C0BNR0EEAAJ} \\
-    Trello & Phân công và theo dõi tiến độ & Mỗi task có người phụ trách, deadline và trạng thái theo workflow &  \\
-    Overleaf & Soạn thảo và review báo cáo & Cập nhật nội dung, review chéo và lưu phiên bản báo cáo chung &  \\
-    Khác & Không có & Không sử dụng công cụ bổ sung & -- \\
+    Trello -- Thu thập yêu cầu & Thu thập yêu cầu thô & Card cho từng yêu cầu; chốt trước khi đưa vào planning & \url{https://trello.com/b/N79ZeHUq/requirement-gathering} \\
+    Trello -- Planning & Chốt requirement chuẩn, specifications và ADR & Card cho requirement, specification và decision & \url{https://trello.com/b/CaFqAJ3t/planning} \\
+    Trello -- Implementation & Theo dõi task hiện thực & Card cho từng task, có người phụ trách và trạng thái & \url{https://trello.com/b/41x81yWC/implementation} \\
+    GitHub & Mã nguồn, tài liệu và báo cáo & Repository là nguồn sự thật; pull request, review và CI/CD & \url{https://github.com/tetrix-uit/tetrix} \\
+    GitHub Pages & Xuất bản tài liệu và báo cáo & Tài liệu artifact và báo cáo ở dạng web & \url{https://tetrix-uit.github.io/tetrix/} \\
     \bottomrule
   \end{tabularx}
 \end{table}
+
+\subsection{Quá trình làm việc và giới hạn của công cụ}
+
+Nhóm làm việc theo quy trình gồm năm pha. Mỗi pha tạo ra một tài liệu và kết thúc
+bằng đúng một commit, nên mọi thay đổi đều truy vết được và biết rõ ai chịu trách
+nhiệm.
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Năm pha làm việc và trách nhiệm}
+  \begin{tabularx}{\textwidth}{P{0.8cm} P{3.2cm} Y P{2.6cm}}
+    \toprule
+    \textbf{Pha} & \textbf{Tên pha} & \textbf{Kết quả} & \textbf{Trách nhiệm} \\
+    \midrule
+    1 & Thu thập yêu cầu & Change summary và danh sách requirement của thay đổi. & Requirement owner \\
+    2 & Đặc tả và quyết định & Specifications và ADR cho các lựa chọn thiết kế. & Solution owner \\
+    3 & Chia việc & Implementation plan và các task kèm thứ tự và phụ thuộc. & Solution owner \\
+    4 & Hiện thực & Mã nguồn và kiểm thử cho từng task. & Implementation owner \\
+    5 & Đóng gói phiên bản & Bản chụp version của feature và cập nhật feature README. & Release owner \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Mỗi tài liệu mang một mã định danh riêng (ví dụ \texttt{req-rotate}). Nhờ đó nhóm
+truy vết được một yêu cầu từ requirement, qua specification và ADR, tới task, tới
+mã nguồn, và cuối cùng tới version đã chấp nhận. Mỗi commit ghi rõ pha và thay đổi,
+nên lịch sử git là bằng chứng cho tiến độ và trách nhiệm.
+
+Nhóm họp trao đổi qua Slack để chốt specifications và ADR, đồng thời phân công công
+việc ở mức high level trước khi bắt đầu pha hiện thực.
+
+Nhóm dùng Trello để phân công và theo dõi tiến độ. Ngoài thao tác thủ công, nhóm
+thiết lập đồng bộ tự động: sau khi một pull request chứa tài liệu được merge, workflow
+CI/CD \texttt{accepted-artifact-issues.yml} chuyển mỗi tài liệu đã được accept thành
+một card Trello và gửi thông báo qua Slack. Cách này giữ repository làm nguồn sự thật
+và giảm thao tác nhập liệu.
+
+Tuy nhiên, bản Trello mặc định (Free) đặt ra giới hạn cho quy trình của nhóm:
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Giới hạn của Trello bản Free đối với quy trình của nhóm}
+  \begin{tabularx}{\textwidth}{P{4.8cm} Y}
+    \toprule
+    \textbf{Giới hạn} & \textbf{Hệ quả} \\
+    \midrule
+    Custom Fields bị khoá sau gói trả phí & Không có chỗ lưu khoá định danh (idempotency key) ổn định cho mỗi tài liệu. \\
+    API listing/filter của board không trả đủ ngữ cảnh (card đã archive hoặc đã chuyển list) & Bộ đồng bộ không nhận diện được card cũ đã chuyển sang \texttt{Done}, nên tạo lại card mới. \\
+    Không có ràng buộc duy nhất (unique constraint) ở phía Trello & Hai card cho cùng một tài liệu có thể cùng tồn tại; khi phát hiện trùng, bộ đồng bộ dừng và từ chối cập nhật. \\
+    Chất lượng quản trị CI/CD ở bản Free & Việc chạy lại và khôi phục phải làm thủ công, dễ sinh trùng nếu nhiều lần chạy song song. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Vì các giới hạn trên, bộ đồng bộ dùng chính phần mô tả của card làm khoá định danh.
+Khi card bị chuyển sang \texttt{Done} hoặc bị sửa mô tả, khoá này mất và bộ đồng bộ
+tạo lại card; khi đã tồn tại hai card cùng khoá, bộ đồng bộ dừng thay vì cập nhật.
+
+Với một dự án mã nguồn mở, GitHub Projects phù hợp hơn: cùng nền tảng với repository,
+có sub-issues, field và API ổn định, nên đồng bộ có thể dùng khoá định danh ổn định.
+Tuy nhiên, đề bài yêu cầu dùng Trello, nên nhóm không còn lựa chọn khác. Nhóm ghi nhận
+giới hạn này và xử lý thủ công (xoá card trùng) khi cần.
 
 \subsection{Quy tắc phối hợp và tuân thủ}
 
 \begin{enumerate}
   \item \textbf{Trao đổi:} Mọi thắc mắc, thông báo và quyết định chính thức được trao đổi trên channel Slack của nhóm. Thành viên có trách nhiệm đọc và phản hồi trong vòng 24 giờ.
   \item \textbf{Phân công:} Admin phân công card trên Trello; thành viên nhận việc, cập nhật trạng thái và ghi chú tiến độ trên card.
-  \item \textbf{Tiến độ:} TO-DO.
-  \item \textbf{Deadline:} Deadline nội bộ cuối cùng là ngày XXX. Nếu có nguy cơ trễ hạn, thành viên phải báo trước trên Slack ít nhất 24 giờ và đề xuất thời gian hoàn thành mới.
+  \item \textbf{Tiến độ:} Mỗi thành viên cập nhật trạng thái card trên Trello khi bắt đầu và khi hoàn thành một task; Leader tổng hợp tiến độ vào cuối mỗi tuần.
+  \item \textbf{Deadline:} Deadline nội bộ cuối cùng là ngày nộp bài theo thông báo của giảng viên. Nếu có nguy cơ trễ hạn, thành viên phải báo trước trên Slack ít nhất 24 giờ và đề xuất thời gian hoàn thành mới.
   \item \textbf{Review:} Mỗi phần nội dung phải được ít nhất một thành viên khác kiểm tra trước khi chuyển sang \texttt{Done}.
   \item \textbf{Biểu quyết:} Quyết định được thông qua khi có ít nhất 3/5 thành viên đồng ý. Các quyết định quan trọng được ghi lại trên Slack hoặc Trello.
   \item \textbf{Trễ hạn/không hoàn thành:} Nhóm nhắc nhở và hỗ trợ thành viên trước; nếu tiếp tục trễ hạn hoặc không cập nhật, Leader ghi nhận trên Slack/Trello và có thể điều chỉnh phân công sau khi thông báo cho cả nhóm.
@@ -247,7 +350,7 @@ sử dụng thêm Trello để quản lý công việc và Overleaf để cùng 
 
 Đóng góp của mỗi thành viên được đánh giá dựa trên mức độ hoàn thành task trên
 Trello, chất lượng và độ chính xác của nội dung, việc tuân thủ deadline, lịch sử
-chỉnh sửa trên Overleaf, mức độ tham gia trao đổi/review trên Slack và tinh thần
+chỉnh sửa trên GitHub, mức độ tham gia trao đổi/review trên Slack và tinh thần
 chủ động hỗ trợ nhóm.
 
 \begin{table}[H]
@@ -276,7 +379,7 @@ của phần việc mình thực hiện và cùng chịu trách nhiệm đối v
 
 \subsection{Hiệu lực và điều chỉnh hợp đồng}
 
-Hợp đồng có hiệu lực từ khi cả ba thành viên xác nhận đồng ý và kết thúc sau khi
+Hợp đồng có hiệu lực từ khi cả năm thành viên xác nhận đồng ý và kết thúc sau khi
 bài tập được nộp. Mọi sửa đổi phải được ít nhất 3/5 thành viên đồng ý và được
 ghi nhận trong bảng sau.
 
@@ -305,8 +408,185 @@ Các thành viên xác nhận đã đọc, thống nhất và cam kết thực h
     Trần Minh Hiếu & Đồng ý & \signatureHieu & 10/09/2026 \\
     Nguyễn Trọng Khương & Đồng ý & \signatureKhuong & 10/09/2026 \\
     Trần Minh Lợi & Đồng ý & \signatureLoi & 10/09/2026 \\
-    Dương Quang Minh & Đồng ý &\signatureMinh & 10/09/2026 \\
+    Dương Quang Minh & Đồng ý & \signatureMinh & 10/09/2026 \\
     Phạm Minh Tuấn & Đồng ý & \signatureTuan & 10/09/2026 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% ================================================================
+\section{Giới thiệu game}
+% ================================================================
+
+Tetrix là trò chơi xếp gạch rơi (falling-block) chạy trên terminal. Trò chơi
+được viết bằng C++17, không dùng thư viện đồ họa ngoài. Chương trình chỉ dùng
+ANSI escape code để vẽ, POSIX termios để đọc phím và ISO C++ \texttt{chrono} để
+đếm thời gian.
+
+Luật chơi:
+
+\begin{itemize}
+  \item Bàn chơi là lưới 20 hàng và 15 cột, có viền \texttt{\#}.
+  \item Bảy loại khối là I, O, T, S, Z, J, L. Mỗi khối nằm trong một lưới 4x4.
+  \item Khối rơi xuống theo một khoảng thời gian. Người chơi di chuyển và xoay khối.
+  \item Khi một hàng đầy, hàng đó biến mất và các hàng phía trên dồn xuống.
+  \item Mỗi hàng đã xóa làm tốc độ rơi nhanh hơn. Độ trễ giảm 50 ms mỗi hàng, với sàn 100 ms.
+  \item Ô trên bàn chơi được vẽ bằng hai cột ký tự, nên viền và khối trông vuông.
+  \item Ván chơi kết thúc khi vị trí sinh khối mới đã bị chiếm.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Tính năng chính của game}
+  \begin{tabularx}{\textwidth}{P{3.0cm} Y P{2.6cm}}
+    \toprule
+    \textbf{Tính năng} & \textbf{Mô tả} & \textbf{Yêu cầu} \\
+    \midrule
+    Bàn chơi có viền & Lưới 20x15, viền \texttt{\#}, ô trống là dấu cách. & \texttt{req-screen} \\
+    Bảy loại khối & I, O, T, S, Z, J, L với quy tắc sinh khối. & \texttt{req-blocks} \\
+    Rơi và điều khiển & Rơi theo thời gian, di chuyển và thoát theo yêu cầu. & \texttt{req-falling} \\
+    Xóa hàng & Xóa hàng đầy và dồn các hàng phía trên xuống. & \texttt{req-line-clear} \\
+    Hiển thị vuông & Viền và khối vẽ bằng ô vuông hai cột. & \texttt{req-square-ui} \\
+    Xoay khối & Xoay 90 độ với kiểm tra tường và va chạm. & \texttt{req-rotate} \\
+    Tăng tốc & Giảm độ trễ mỗi hàng đã xóa, sàn 100 ms. & \texttt{req-speedup} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% ================================================================
+\section{Hướng dẫn sử dụng}
+% ================================================================
+
+\subsection{Yêu cầu}
+
+\begin{itemize}
+  \item Trình biên dịch hỗ trợ C++17 (g++ hoặc clang++).
+  \item Một terminal. Trò chơi dùng ANSI escape code và POSIX termios.
+\end{itemize}
+
+\subsection{Biên dịch và chạy trên Linux}
+
+Mã nguồn nằm trong thư mục \texttt{apps/tetrix}, gồm \texttt{main.cpp},
+\texttt{input.cpp} và \texttt{render.cpp}. Chạy các lệnh sau:
+
+\begin{verbatim}
+cd apps/tetrix
+g++ -std=c++17 -Wall -Wextra -pedantic -o tetrix main.cpp input.cpp render.cpp
+./tetrix
+\end{verbatim}
+
+\subsection{Biên dịch và chạy trên Windows}
+
+Mã nguồn dùng \texttt{<termios.h>} và \texttt{<unistd.h>} của POSIX, nên trình
+biên dịch Windows gốc (MSVC trong PowerShell hoặc cmd) không biên dịch được.
+Cần một môi trường POSIX:
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Cách chạy trên Windows}
+  \begin{tabularx}{\textwidth}{P{3.4cm} Y}
+    \toprule
+    \textbf{Cách} & \textbf{Các bước} \\
+    \midrule
+    WSL2 (khuyến nghị) & Cài WSL2 và Ubuntu; chạy \texttt{sudo apt install g++}; mở thư mục dự án trong WSL; biên dịch và chạy như phần Linux. \\
+    MSYS2 (MinGW-w64) & Cài MSYS2; chạy \texttt{pacman -S mingw-w64-x86\_64-gcc}; mở MSYS2 shell; biên dịch và chạy như phần Linux. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Phím điều khiển}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Phím điều khiển}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Phím} & \textbf{Hành động} & \textbf{Ghi chú} \\
+    \midrule
+    \texttt{a} & Sang trái & Di chuyển khối sang trái một ô. \\
+    \texttt{d} & Sang phải & Di chuyển khối sang phải một ô. \\
+    \texttt{x} & Rơi nhanh & Di chuyển khối xuống một ô. \\
+    \texttt{w} & Xoay & Xoay khối 90 độ. \\
+    \texttt{q} & Thoát & Kết thúc ván chơi. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Chạy kiểm thử}
+
+\begin{verbatim}
+cd apps/tetrix
+g++ -std=c++17 -Wall -Wextra -pedantic -o test_rotate tests/test_rotate.cpp
+./test_rotate
+\end{verbatim}
+
+% ================================================================
+\section{Tài liệu kỹ thuật}
+% ================================================================
+
+Tài liệu kỹ thuật đầy đủ của dự án được xuất bản bằng Docusaurus. Các liên kết:
+
+\begin{itemize}
+  \item Documentation site: \url{https://tetrix-uit.github.io/tetrix}
+  \item Tài liệu artifact (requirement, specification, decision): \url{https://tetrix-uit.github.io/tetrix/artifact}
+  \item Báo cáo này ở dạng web: \url{https://tetrix-uit.github.io/tetrix/reports/final-project-report.vi/}
+\end{itemize}
+
+Site tổng hợp bốn nhóm tài liệu:
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Các nhóm tài liệu kỹ thuật}
+  \begin{tabularx}{\textwidth}{P{3.6cm} Y}
+    \toprule
+    \textbf{Nhóm} & \textbf{Nội dung} \\
+    \midrule
+    Mô hình miền & Bounded context \texttt{context-tetrix-gameplay} và hai aggregate \texttt{agg-board} và \texttt{agg-falling-piece}. \\
+    Tài liệu theo giai đoạn & Requirements, specifications, decisions và implementation plan của từng change; kèm bản chụp theo version. \\
+    Wiki kỹ thuật & Kiến trúc nhiều repository, quy trình tài liệu theo SDLC và thiết kế Domain-Driven Design. \\
+    Báo cáo và nghiên cứu & Báo cáo cuối kỳ và các ghi chú nghiên cứu. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Nhóm áp dụng quy trình tài liệu theo SDLC: mỗi thay đổi đi qua năm pha
+Requirements, Specifications, Plan, Build và Version; mỗi pha kết thúc bằng một
+commit; repository là nguồn sự thật, và mỗi version là một bản chụp tài liệu đã
+được chấp nhận. Tài liệu nằm trong \texttt{docs/} và được xuất bản tự động qua
+GitHub Actions.
+
+Mã nguồn game nằm trong \texttt{apps/tetrix}, với kiểm thử trong
+\texttt{apps/tetrix/tests}. Các thành phần dùng chung nằm trong \texttt{libs/},
+dịch vụ trong \texttt{services/}, và kiểm thử đầu cuối trong \texttt{e2e/}.
+
+% ================================================================
+\section{Kỹ năng nhóm thu nhận được}
+% ================================================================
+
+Qua quá trình làm đồ án, nhóm thu nhận được các kỹ năng sau. Mỗi kỹ năng gắn với
+một tài liệu hoặc một công cụ cụ thể trong dự án, nên có thể kiểm chứng.
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Kỹ năng nhóm thu nhận được}
+  \begin{tabularx}{\textwidth}{P{3.0cm} Y P{3.0cm}}
+    \toprule
+    \textbf{Nhóm kỹ năng} & \textbf{Kỹ năng cụ thể} & \textbf{Bằng chứng} \\
+    \midrule
+    Kỹ thuật lập trình & C++17, vòng lặp game, thuật toán va chạm và xoay, lập trình terminal (ANSI escape, POSIX termios), định thời \texttt{chrono}. & \path{apps/tetrix/main.cpp}, \texttt{spec-board}, \texttt{spec-rotate} \\
+    Thiết kế và kiến trúc & OOP đa hình cho bảy loại khối; Domain-Driven Design với bounded context, aggregate và invariant. & Lớp \texttt{Blocks}, \texttt{RotatingBlocks}, \texttt{SquareBlocks}; \path{docs/domain} \\
+    Kiểm thử & Viết unit test; xác định tiêu chí acceptance cho từng requirement; kiểm tra thủ công. & \path{tests/test_rotate.cpp}, các \texttt{req-*} \\
+    Quy trình phát triển & Quy trình SDLC năm pha; truy vết requirement, specification, ADR, task, mã nguồn và version. & \path{docs/artifact}, \texttt{change-initial} \\
+    Quản lý phiên bản và CI/CD & Git, branching, review pull request, conventional commits, pre-commit hook, GitHub Actions, môi trường Nix/devenv. & \path{.github/workflows}, \path{devenv.nix} \\
+    Tài liệu và viết kỹ thuật & Markdown, Docusaurus, LaTeX/XeLaTeX và vẽ hình TikZ. & \texttt{docs/}, báo cáo này \\
+    Quản lý dự án & Trello và Slack; phân rã task, ước lượng, review chéo và biểu quyết. & Hợp đồng nhóm \\
+    Gỡ lỗi và phân tích & Chẩn đoán lỗi đồng bộ Trello (trùng card do thiếu idempotency key); sửa lỗi build LaTeX. & \path{accepted-artifact-issues}, báo cáo này \\
+    Kỹ năng mềm & Phối hợp nhóm, nhận trách nhiệm theo pha, truy vết, giao tiếp và cam kết học thuật. & Hợp đồng nhóm \\
     \bottomrule
   \end{tabularx}
 \end{table}
