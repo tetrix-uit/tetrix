@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
@@ -14,7 +15,8 @@ using namespace std;
 char board[H][W] = {}; // ' ' = empty, '#' = wall, letter = stacked block
 
 int x, y, b;
-int delayMs = 500; // Fall delay in milliseconds per spec-speedup.
+int delayMs = 500;      // Fall delay in milliseconds per spec-speedup.
+int clearedTotal = 0;   // Total count of cleared lines in this game.
 // Index 0=I, 1=O, 2=T, 3=S, 4=Z, 5=J, 6=L.
 // ' ' = empty cell, letter = filled cell.
 const char initialBlocks[7][4][4] = {
@@ -139,8 +141,46 @@ bool tryRotate() {
   return true;
 }
 
-// Stub: task-line-clear completes the lock-step call.
-int removeLine() { return 0; }
+// Scans rows H-2..1 for a full inner row, removes it, and drops the rows
+// above by one per removed row. Re-checks the same row index after a removal
+// since the row shifted into that slot may itself be full.
+int removeLine() {
+  int clearedRows = 0;
+  int i = H - 2;
+  while (i >= 1) {
+    bool full = true;
+    for (int j = 1; j <= W - 2; j++) {
+      if (board[i][j] == ' ') {
+        full = false;
+        break;
+      }
+    }
+    if (full) {
+      for (int k = i; k > 1; k--)
+        for (int j = 1; j <= W - 2; j++)
+          board[k][j] = board[k - 1][j];
+      for (int j = 1; j <= W - 2; j++)
+        board[1][j] = ' ';
+      clearedRows++;
+    } else {
+      i--;
+    }
+  }
+  if (clearedRows > 0)
+    cout << "Full row cleared { clearedRows: " << clearedRows << " }\n";
+  return clearedRows;
+}
+
+// Shortens the fall delay by 50 ms per cleared line, floored at 100 ms. A
+// count of 0 changes no delay and fires no event.
+void applySpeedup(int clearedRows) {
+  if (clearedRows <= 0)
+    return;
+  clearedTotal += clearedRows;
+  delayMs = max(100, 500 - 50 * clearedTotal);
+  cout << "Falling speed increased { clearedTotal: " << clearedTotal
+       << ", delayMs: " << delayMs << " }\n";
+}
 
 void block2Board() {
   for (int i = 0; i < 4; i++)
@@ -162,12 +202,14 @@ void initBoard() {
       else
         board[i][j] = ' ';
 }
+// Draws each well cell as two text columns so the border and the blocks
+// look square: wall -> "##", block -> letter + letter, empty -> two spaces.
 void draw() {
   cout << "\033[2J\033[H";
 
   for (int i = 0; i < H; i++, cout << endl)
     for (int j = 0; j < W; j++)
-      cout << board[i][j];
+      cout << board[i][j] << board[i][j];
 }
 
 #ifndef TETRIX_TEST
@@ -224,7 +266,8 @@ int main() {
       y++;
     else {
       block2Board();
-      removeLine();
+      int clearedRows = removeLine();
+      applySpeedup(clearedRows);
       cout << "Falling block landed" << endl;
       if (!spawnBlockOk()) {
         draw();
