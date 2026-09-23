@@ -55,7 +55,7 @@ The candidate is a separate mutable `char[4][4]` grid for `canPlace()`.
 ## Test contract
 
 The separate file `apps/tetrix/tests/test_rotate.cpp` tests the production classes and functions.
-The test build excludes POSIX headers, `pollKey()`, and the interactive `main()`.
+The test build excludes the POSIX file `apps/tetrix/input.cpp` and the interactive `main()`.
 The tests do not contain a replacement rotation implementation.
 
 - A call through `Blocks*` must reach an observable derived override.
