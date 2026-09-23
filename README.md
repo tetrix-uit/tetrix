@@ -1,8 +1,35 @@
-# Project
+# Tetrix
 
-This repository is the root of a project that uses the multiple repositories architecture.
-The project has many components. Each component is an application, a service, a library, or a
-deployment configuration. The project also has one shared end-to-end test repository.
+Tetrix is a falling-block game that runs in the terminal. The game is one C++17 console
+program in `apps/tetrix`. The repository also holds the project documentation: the
+requirements, the specifications, the decisions, and the implementation plan of each feature.
+
+## Links
+
+- Repository: <https://github.com/tetrix-uit/tetrix>
+- Documentation site: <https://tetrix-uit.github.io/tetrix/>
+- Artifacts (requirements, specifications, decisions):
+  <https://tetrix-uit.github.io/tetrix/artifact>
+- Final report (Vietnamese):
+  <https://tetrix-uit.github.io/tetrix/reports/final-project-report.vi/>
+- Trello boards:
+  - Requirement gathering: <https://trello.com/b/N79ZeHUq/requirement-gathering>
+  - Planning (requirements, specifications, decisions): <https://trello.com/b/CaFqAJ3t/planning>
+  - Implementation (tasks): <https://trello.com/b/41x81yWC/implementation>
+
+Each feature has a version. A version is a copy of the accepted artifacts of that feature.
+
+## Build the game
+
+The game is a C++17 console program. Build it with `g++`.
+
+```bash
+cd apps/tetrix
+g++ -std=c++17 -Wall -Wextra -pedantic -o tetrix main.cpp input.cpp render.cpp
+./tetrix
+```
+
+The game reads the keyboard with POSIX termios. On Windows, use WSL2 or MSYS2.
 
 ## Directories
 
