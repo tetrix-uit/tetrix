@@ -32,7 +32,8 @@ The candidate is a separate mutable `char[4][4]` grid for `canPlace()`.
 
 ## Collision guard
 
-- The caller removes the active block from the board before the turn. The game loop already calls `boardDelBlock()` before key handling.
+- The caller removes the active block from the board before the turn. The game
+  loop already calls `boardDelBlock()` before key handling.
 - The turn applies only if `canPlace()` on the turned grid at (x, y)
   returns true. `canMove()` tests only the current shape and cannot guard
   rotation (C-02).
@@ -58,7 +59,8 @@ The test build excludes POSIX headers, `pollKey()`, and the interactive `main()`
 The tests do not contain a replacement rotation implementation.
 
 - A call through `Blocks*` must reach an observable derived override.
-- Checks cover all seven templates, clockwise results, four filled cells, four-turn restoration, and the unchanged O grid.
+- Checks cover all seven templates, clockwise results, four filled cells,
+  four-turn restoration, and the unchanged O grid.
 - Checks cover both side walls, the top border, the floor, and stacked cells.
 - Rejection checks compare full shape and board snapshots, `x`, `y`, and event output.
 - Spawn checks cover orientation reset before both accepted and rejected collision checks.

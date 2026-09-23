@@ -51,7 +51,8 @@ Its behavior is in [spec-rotate](spec-rotate.md).
 - Each grid has four filled cells. A space is empty; the shape letter fills a cell.
 - Six `RotatingBlocks` objects hold I, T, S, Z, J, and L.
 - One `SquareBlocks` object holds O.
-- All seven objects exist for the game lifetime. The pointer table refers to these objects without copies into base objects.
+- All seven objects exist for the game lifetime. The pointer table refers to
+  these objects without copies into base objects.
 - I: one full row of `I` in the grid.
 - O: a 2 by 2 square of `O`.
 - T: one `T` above three `T` in a row.
