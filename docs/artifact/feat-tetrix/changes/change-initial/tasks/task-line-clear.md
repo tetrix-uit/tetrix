@@ -25,7 +25,7 @@ The game removes each full row after a lock and moves each row above down.
 ## Check
 
 Rebuild with `g++ -std=c++17 -o tetrix main.cpp` in `apps/tetrix`.
-Fill one row and lock a block. The full row disappears and rows above drop.
+Fill one row and lock a block. The full row disappears and rows above drop
 
 ## Acceptance criteria
 
