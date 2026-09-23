@@ -210,40 +210,66 @@ int main() {
     cout << "Game over" << endl;
     return 0;
   }
-  while (true) {
+
+  Input::enableRawMode();
+
+  // How often the loop checks for input, independent of the fall speed
+  // (delayMs). Keeps controls responsive even while delayMs is still 500ms.
+  const int pollMs = 16;
+  auto lastFall = std::chrono::steady_clock::now();
+  bool quit = false;
+  while (!quit) {
     boardDelBlock();
     char c = 0;
+    bool dirty = false;
     if (Input::pollKey(c)) {
-      if (c == 'a' && canMove(-1, 0))
+      if (c == 'a' && canMove(-1, 0)) {
         x--;
-      else if (c == 'd' && canMove(1, 0))
+        dirty = true;
+      } else if (c == 'd' && canMove(1, 0)) {
         x++;
-      else if (c == 'x' && canMove(0, 1))
+        dirty = true;
+      } else if (c == 'x' && canMove(0, 1)) {
         y++;
-      else if (c == 'w')
-        tryRotate();
-      else if (c == 'q') {
+        dirty = true;
+      } else if (c == 'w') {
+        dirty = tryRotate();
+      } else if (c == 'q') {
         cout << "Game quit" << endl;
-        break;
+        quit = true;
       }
     }
-    if (canMove(0, 1))
-      y++;
-    else {
+
+    auto now = std::chrono::steady_clock::now();
+    if (!quit && std::chrono::duration_cast<std::chrono::milliseconds>(
+                     now - lastFall)
+                         .count() >= delayMs) {
+      lastFall = now;
+      dirty = true;
+      if (canMove(0, 1)) {
+        y++;
+      } else {
+        block2Board();
+        int clearedRows = removeLine();
+        applySpeedup(clearedRows);
+        cout << "Falling block landed" << endl;
+        if (!spawnBlockOk()) {
+          Renderer::draw(board);
+          cout << "Game over" << endl;
+          quit = true;
+        }
+      }
+    }
+
+    if (!quit) {
       block2Board();
-      int clearedRows = removeLine();
-      applySpeedup(clearedRows);
-      cout << "Falling block landed" << endl;
-      if (!spawnBlockOk()) {
+      if (dirty)
         Renderer::draw(board);
-        cout << "Game over" << endl;
-        break;
-      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(pollMs));
     }
-    block2Board();
-    Renderer::draw(board);
-    std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
   }
+
+  Input::restoreMode();
   return 0;
 }
 #endif
