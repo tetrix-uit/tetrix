@@ -4,10 +4,9 @@
 #include <ctime>
 #include <iostream>
 #include <thread>
-#ifndef TETRIX_TEST
-#include <termios.h>
-#include <unistd.h>
-#endif
+
+#include "input.h"
+#include "render.h"
 
 using namespace std;
 #define H 20
@@ -202,53 +201,19 @@ void initBoard() {
       else
         board[i][j] = ' ';
 }
-// Draws each well cell as two text columns so the border and the blocks
-// look square: wall -> "##", block -> letter + letter, empty -> two spaces.
-void draw() {
-  cout << "\033[2J\033[H";
-
-  for (int i = 0; i < H; i++, cout << endl)
-    for (int j = 0; j < W; j++)
-      cout << board[i][j] << board[i][j];
-}
-
 #ifndef TETRIX_TEST
-// Non-blocking key read via POSIX termios. Returns true and sets c when a key
-// is present.
-bool pollKey(char &c) {
-  termios oldt;
-  termios newt;
-  bool hasTermios = tcgetattr(STDIN_FILENO, &oldt) == 0;
-  if (hasTermios) {
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    newt.c_cc[VMIN] = 0;
-    newt.c_cc[VTIME] = 0;
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt); // Setup.
-  }
-  char ch = 0;
-  bool got = read(STDIN_FILENO, &ch, 1) == 1;
-  if (hasTermios)
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt); // Restore.
-  if (got) {
-    c = ch;
-    return true;
-  }
-  return false;
-}
-
 int main() {
   initBoard();
   srand(time(0));
   if (!spawnBlockOk()) {
-    draw();
+    Renderer::draw(board);
     cout << "Game over" << endl;
     return 0;
   }
   while (true) {
     boardDelBlock();
     char c = 0;
-    if (pollKey(c)) {
+    if (Input::pollKey(c)) {
       if (c == 'a' && canMove(-1, 0))
         x--;
       else if (c == 'd' && canMove(1, 0))
@@ -270,13 +235,13 @@ int main() {
       applySpeedup(clearedRows);
       cout << "Falling block landed" << endl;
       if (!spawnBlockOk()) {
-        draw();
+        Renderer::draw(board);
         cout << "Game over" << endl;
         break;
       }
     }
     block2Board();
-    draw();
+    Renderer::draw(board);
     std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
   }
   return 0;
