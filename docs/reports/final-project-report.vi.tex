@@ -184,17 +184,18 @@
 \tableofcontents
 \newpage
 
+
 % ================================================================
-\section{Hợp đồng nhóm}
+\section{Mở đầu}
 % ================================================================
 
-\subsection{Mục tiêu và phạm vi làm việc}
+\subsection{Mục tiêu}
 
-\textbf{Mục tiêu cụ thể của nhóm:} hoàn thành trò chơi Tetrix chạy trên terminal
-bằng C++17 theo đúng yêu cầu đề bài, đồng thời áp dụng một quy trình làm việc
-chuyên nghiệp để mọi phần việc đều truy vết được.
+Hoàn thành trò chơi Tetrix chạy trên terminal bằng C++17 theo đúng yêu cầu đề bài,
+đồng thời áp dụng một quy trình làm việc chuyên nghiệp để mọi phần việc đều truy
+vết được.
 
-\textbf{Phạm vi làm việc:}
+\subsection{Phạm vi}
 
 \begin{itemize}
   \item Trong phạm vi: bàn chơi có viền, bảy loại khối, khối rơi theo thời gian,
@@ -202,6 +203,166 @@ chuyên nghiệp để mọi phần việc đều truy vết được.
         sau mỗi hàng đã xóa.
   \item Ngoài phạm vi: âm thanh, lưu điểm, menu và chơi qua mạng.
 \end{itemize}
+% ================================================================
+\section{Giới thiệu game}
+% ================================================================
+
+Tetrix là trò chơi xếp gạch rơi (falling-block) chạy trên terminal. Trò chơi
+được viết bằng C++17, không dùng thư viện đồ họa ngoài. Chương trình chỉ dùng
+ANSI escape code để vẽ, POSIX termios để đọc phím và ISO C++ \texttt{chrono} để
+đếm thời gian.
+
+\subsection{Luật chơi}
+
+\begin{itemize}
+  \item Bàn chơi là lưới 20 hàng và 15 cột, có viền \texttt{\#}.
+  \item Bảy loại khối là I, O, T, S, Z, J, L. Mỗi khối nằm trong một lưới 4x4.
+  \item Khối rơi xuống theo một khoảng thời gian. Người chơi di chuyển và xoay khối.
+  \item Khi một hàng đầy, hàng đó biến mất và các hàng phía trên dồn xuống.
+  \item Mỗi hàng đã xóa làm tốc độ rơi nhanh hơn. Độ trễ giảm 50 ms mỗi hàng, với sàn 100 ms.
+  \item Ô trên bàn chơi được vẽ bằng hai cột ký tự, nên viền và khối trông vuông.
+  \item Ván chơi kết thúc khi vị trí sinh khối mới đã bị chiếm.
+\end{itemize}
+
+\subsection{Tính năng chính}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Tính năng chính của game}
+  \begin{tabularx}{\textwidth}{P{3.0cm} Y P{2.6cm}}
+    \toprule
+    \textbf{Tính năng} & \textbf{Mô tả} & \textbf{Yêu cầu} \\
+    \midrule
+    Bàn chơi có viền & Lưới 20x15, viền \texttt{\#}, ô trống là dấu cách. & \texttt{req-screen} \\
+    Bảy loại khối & I, O, T, S, Z, J, L với quy tắc sinh khối. & \texttt{req-blocks} \\
+    Rơi và điều khiển & Rơi theo thời gian, di chuyển và thoát theo yêu cầu. & \texttt{req-falling} \\
+    Xóa hàng & Xóa hàng đầy và dồn các hàng phía trên xuống. & \texttt{req-line-clear} \\
+    Hiển thị vuông & Viền và khối vẽ bằng ô vuông hai cột. & \texttt{req-square-ui} \\
+    Xoay khối & Xoay 90 độ với kiểm tra tường và va chạm. & \texttt{req-rotate} \\
+    Tăng tốc & Giảm độ trễ mỗi hàng đã xóa, sàn 100 ms. & \texttt{req-speedup} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% ================================================================
+\section{Hướng dẫn sử dụng}
+% ================================================================
+
+\subsection{Yêu cầu}
+
+\begin{itemize}
+  \item Trình biên dịch hỗ trợ C++17 (g++ hoặc clang++).
+  \item Một terminal. Trò chơi dùng ANSI escape code và POSIX termios.
+\end{itemize}
+
+\subsection{Biên dịch và chạy trên Linux}
+
+Mã nguồn nằm trong thư mục \texttt{apps/tetrix}, gồm \texttt{main.cpp},
+\texttt{input.cpp} và \texttt{render.cpp}. Chạy các lệnh sau:
+
+\begin{verbatim}
+cd apps/tetrix
+g++ -std=c++17 -Wall -Wextra -pedantic -o tetrix main.cpp input.cpp render.cpp
+./tetrix
+\end{verbatim}
+
+\subsection{Biên dịch và chạy trên Windows}
+
+Mã nguồn dùng \texttt{<termios.h>} và \texttt{<unistd.h>} của POSIX, nên trình
+biên dịch Windows gốc (MSVC trong PowerShell hoặc cmd) không biên dịch được.
+Cần một môi trường POSIX:
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Cách chạy trên Windows}
+  \begin{tabularx}{\textwidth}{P{3.4cm} Y}
+    \toprule
+    \textbf{Cách} & \textbf{Các bước} \\
+    \midrule
+    WSL2 (khuyến nghị) & Cài WSL2 và Ubuntu; chạy \texttt{sudo apt install g++}; mở thư mục dự án trong WSL; biên dịch và chạy như phần Linux. \\
+    MSYS2 (MinGW-w64) & Cài MSYS2; chạy \texttt{pacman -S mingw-w64-x86\_64-gcc}; mở MSYS2 shell; biên dịch và chạy như phần Linux. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Phím điều khiển}
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Phím điều khiển}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Phím} & \textbf{Hành động} & \textbf{Ghi chú} \\
+    \midrule
+    \texttt{a} & Sang trái & Di chuyển khối sang trái một ô. \\
+    \texttt{d} & Sang phải & Di chuyển khối sang phải một ô. \\
+    \texttt{x} & Rơi nhanh & Di chuyển khối xuống một ô. \\
+    \texttt{w} & Xoay & Xoay khối 90 độ. \\
+    \texttt{q} & Thoát & Kết thúc ván chơi. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Chạy kiểm thử}
+
+\begin{verbatim}
+cd apps/tetrix
+g++ -std=c++17 -Wall -Wextra -pedantic -o test_rotate tests/test_rotate.cpp
+./test_rotate
+\end{verbatim}
+
+% ================================================================
+\section{Tài liệu kỹ thuật}
+% ================================================================
+
+Tài liệu kỹ thuật đầy đủ của dự án được xuất bản bằng Docusaurus.
+
+\subsection{Liên kết tài liệu}
+
+\begin{itemize}
+  \item Documentation site: \url{https://tetrix-uit.github.io/tetrix}
+  \item Tài liệu artifact (requirement, specification, decision): \url{https://tetrix-uit.github.io/tetrix/artifact}
+  \item Báo cáo này ở dạng web: \url{https://tetrix-uit.github.io/tetrix/reports/final-project-report.vi/}
+\end{itemize}
+
+\subsection{Cấu trúc tài liệu}
+
+Site tổng hợp bốn nhóm tài liệu:
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Các nhóm tài liệu kỹ thuật}
+  \begin{tabularx}{\textwidth}{P{3.6cm} Y}
+    \toprule
+    \textbf{Nhóm} & \textbf{Nội dung} \\
+    \midrule
+    Mô hình miền & Bounded context \texttt{context-tetrix-gameplay} và hai aggregate \texttt{agg-board} và \texttt{agg-falling-piece}. \\
+    Tài liệu theo giai đoạn & Requirements, specifications, decisions và implementation plan của từng change; kèm bản chụp theo version. \\
+    Wiki kỹ thuật & Kiến trúc nhiều repository, quy trình tài liệu theo SDLC và thiết kế Domain-Driven Design. \\
+    Báo cáo và nghiên cứu & Báo cáo cuối kỳ và các ghi chú nghiên cứu. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Nhóm áp dụng quy trình tài liệu theo SDLC: mỗi thay đổi đi qua năm pha
+Requirements, Specifications, Plan, Build và Version; mỗi pha kết thúc bằng một
+commit; repository là nguồn sự thật, và mỗi version là một bản chụp tài liệu đã
+được chấp nhận. Tài liệu nằm trong \texttt{docs/} và được xuất bản tự động qua
+GitHub Actions.
+
+\subsection{Cấu trúc mã nguồn}
+
+Mã nguồn game nằm trong \texttt{apps/tetrix}, với kiểm thử trong
+\texttt{apps/tetrix/tests}. Các thành phần dùng chung nằm trong \texttt{libs/},
+dịch vụ trong \texttt{services/}, và kiểm thử đầu cuối trong \texttt{e2e/}.
+
+% ================================================================
+\section{Nhóm và quy trình làm việc}
+% ================================================================
 
 \subsection{Thành viên và phân công trách nhiệm}
 
@@ -370,6 +531,49 @@ chủ động hỗ trợ nhóm.
     \bottomrule
   \end{tabular}
 \end{table}
+% ================================================================
+\section{Kỹ năng nhóm thu nhận được}
+% ================================================================
+
+Qua quá trình làm đồ án, nhóm thu nhận được các kỹ năng sau. Mỗi kỹ năng gắn với
+một tài liệu hoặc một công cụ cụ thể trong dự án, nên có thể kiểm chứng.
+
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Kỹ năng nhóm thu nhận được}
+  \begin{tabularx}{\textwidth}{P{3.0cm} Y P{3.0cm}}
+    \toprule
+    \textbf{Nhóm kỹ năng} & \textbf{Kỹ năng cụ thể} & \textbf{Bằng chứng} \\
+    \midrule
+    Kỹ thuật lập trình & C++17, vòng lặp game, thuật toán va chạm và xoay, lập trình terminal (ANSI escape, POSIX termios), định thời \texttt{chrono}. & \path{apps/tetrix/main.cpp}, \texttt{spec-board}, \texttt{spec-rotate} \\
+    Thiết kế và kiến trúc & OOP đa hình cho bảy loại khối; Domain-Driven Design với bounded context, aggregate và invariant. & Lớp \texttt{Blocks}, \texttt{RotatingBlocks}, \texttt{SquareBlocks}; \path{docs/domain} \\
+    Kiểm thử & Viết unit test; xác định tiêu chí acceptance cho từng requirement; kiểm tra thủ công. & \path{tests/test_rotate.cpp}, các \texttt{req-*} \\
+    Quy trình phát triển & Quy trình SDLC năm pha; truy vết requirement, specification, ADR, task, mã nguồn và version. & \path{docs/artifact}, \texttt{change-initial} \\
+    Quản lý phiên bản và CI/CD & Git, branching, review pull request, conventional commits, pre-commit hook, GitHub Actions, môi trường Nix/devenv. & \path{.github/workflows}, \path{devenv.nix} \\
+    Tài liệu và viết kỹ thuật & Markdown, Docusaurus, LaTeX/XeLaTeX và vẽ hình TikZ. & \texttt{docs/}, báo cáo này \\
+    Quản lý dự án & Trello và Slack; phân rã task, ước lượng, review chéo và biểu quyết. & Hợp đồng nhóm \\
+    Gỡ lỗi và phân tích & Chẩn đoán lỗi đồng bộ Trello (trùng card do thiếu idempotency key); sửa lỗi build LaTeX. & \path{accepted-artifact-issues}, báo cáo này \\
+    Kỹ năng mềm & Phối hợp nhóm, nhận trách nhiệm theo pha, truy vết, giao tiếp và cam kết học thuật. & Hợp đồng nhóm \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+% ================================================================
+\section{Kết luận}
+% ================================================================
+
+Nhóm đã hoàn thành trò chơi Tetrix theo yêu cầu đề bài và áp dụng một quy trình
+làm việc truy vết được cho toàn bộ dự án. Mọi yêu cầu đều có đặc tả, quyết định
+thiết kế, task hiện thực và bản chụp version. Hạn chế còn lại là giới hạn của
+Trello bản Free đối với đồng bộ tự động. Hướng phát triển tiếp theo gồm lưu điểm
+cao, âm thanh và chế độ chơi nhiều người.
+
+\appendix
+
+% ================================================================
+\section{Hợp đồng nhóm}
+% ================================================================
 
 \subsection{Cam kết học thuật}
 
@@ -410,183 +614,6 @@ Các thành viên xác nhận đã đọc, thống nhất và cam kết thực h
     Trần Minh Lợi & Đồng ý & \signatureLoi & 10/09/2026 \\
     Dương Quang Minh & Đồng ý & \signatureMinh & 10/09/2026 \\
     Phạm Minh Tuấn & Đồng ý & \signatureTuan & 10/09/2026 \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-% ================================================================
-\section{Giới thiệu game}
-% ================================================================
-
-Tetrix là trò chơi xếp gạch rơi (falling-block) chạy trên terminal. Trò chơi
-được viết bằng C++17, không dùng thư viện đồ họa ngoài. Chương trình chỉ dùng
-ANSI escape code để vẽ, POSIX termios để đọc phím và ISO C++ \texttt{chrono} để
-đếm thời gian.
-
-Luật chơi:
-
-\begin{itemize}
-  \item Bàn chơi là lưới 20 hàng và 15 cột, có viền \texttt{\#}.
-  \item Bảy loại khối là I, O, T, S, Z, J, L. Mỗi khối nằm trong một lưới 4x4.
-  \item Khối rơi xuống theo một khoảng thời gian. Người chơi di chuyển và xoay khối.
-  \item Khi một hàng đầy, hàng đó biến mất và các hàng phía trên dồn xuống.
-  \item Mỗi hàng đã xóa làm tốc độ rơi nhanh hơn. Độ trễ giảm 50 ms mỗi hàng, với sàn 100 ms.
-  \item Ô trên bàn chơi được vẽ bằng hai cột ký tự, nên viền và khối trông vuông.
-  \item Ván chơi kết thúc khi vị trí sinh khối mới đã bị chiếm.
-\end{itemize}
-
-\begin{table}[H]
-  \centering
-  \small
-  \caption{Tính năng chính của game}
-  \begin{tabularx}{\textwidth}{P{3.0cm} Y P{2.6cm}}
-    \toprule
-    \textbf{Tính năng} & \textbf{Mô tả} & \textbf{Yêu cầu} \\
-    \midrule
-    Bàn chơi có viền & Lưới 20x15, viền \texttt{\#}, ô trống là dấu cách. & \texttt{req-screen} \\
-    Bảy loại khối & I, O, T, S, Z, J, L với quy tắc sinh khối. & \texttt{req-blocks} \\
-    Rơi và điều khiển & Rơi theo thời gian, di chuyển và thoát theo yêu cầu. & \texttt{req-falling} \\
-    Xóa hàng & Xóa hàng đầy và dồn các hàng phía trên xuống. & \texttt{req-line-clear} \\
-    Hiển thị vuông & Viền và khối vẽ bằng ô vuông hai cột. & \texttt{req-square-ui} \\
-    Xoay khối & Xoay 90 độ với kiểm tra tường và va chạm. & \texttt{req-rotate} \\
-    Tăng tốc & Giảm độ trễ mỗi hàng đã xóa, sàn 100 ms. & \texttt{req-speedup} \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-% ================================================================
-\section{Hướng dẫn sử dụng}
-% ================================================================
-
-\subsection{Yêu cầu}
-
-\begin{itemize}
-  \item Trình biên dịch hỗ trợ C++17 (g++ hoặc clang++).
-  \item Một terminal. Trò chơi dùng ANSI escape code và POSIX termios.
-\end{itemize}
-
-\subsection{Biên dịch và chạy trên Linux}
-
-Mã nguồn nằm trong thư mục \texttt{apps/tetrix}, gồm \texttt{main.cpp},
-\texttt{input.cpp} và \texttt{render.cpp}. Chạy các lệnh sau:
-
-\begin{verbatim}
-cd apps/tetrix
-g++ -std=c++17 -Wall -Wextra -pedantic -o tetrix main.cpp input.cpp render.cpp
-./tetrix
-\end{verbatim}
-
-\subsection{Biên dịch và chạy trên Windows}
-
-Mã nguồn dùng \texttt{<termios.h>} và \texttt{<unistd.h>} của POSIX, nên trình
-biên dịch Windows gốc (MSVC trong PowerShell hoặc cmd) không biên dịch được.
-Cần một môi trường POSIX:
-
-\begin{table}[H]
-  \centering
-  \small
-  \caption{Cách chạy trên Windows}
-  \begin{tabularx}{\textwidth}{P{3.4cm} Y}
-    \toprule
-    \textbf{Cách} & \textbf{Các bước} \\
-    \midrule
-    WSL2 (khuyến nghị) & Cài WSL2 và Ubuntu; chạy \texttt{sudo apt install g++}; mở thư mục dự án trong WSL; biên dịch và chạy như phần Linux. \\
-    MSYS2 (MinGW-w64) & Cài MSYS2; chạy \texttt{pacman -S mingw-w64-x86\_64-gcc}; mở MSYS2 shell; biên dịch và chạy như phần Linux. \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-\subsection{Phím điều khiển}
-
-\begin{table}[H]
-  \centering
-  \small
-  \caption{Phím điều khiển}
-  \begin{tabular}{lll}
-    \toprule
-    \textbf{Phím} & \textbf{Hành động} & \textbf{Ghi chú} \\
-    \midrule
-    \texttt{a} & Sang trái & Di chuyển khối sang trái một ô. \\
-    \texttt{d} & Sang phải & Di chuyển khối sang phải một ô. \\
-    \texttt{x} & Rơi nhanh & Di chuyển khối xuống một ô. \\
-    \texttt{w} & Xoay & Xoay khối 90 độ. \\
-    \texttt{q} & Thoát & Kết thúc ván chơi. \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\subsection{Chạy kiểm thử}
-
-\begin{verbatim}
-cd apps/tetrix
-g++ -std=c++17 -Wall -Wextra -pedantic -o test_rotate tests/test_rotate.cpp
-./test_rotate
-\end{verbatim}
-
-% ================================================================
-\section{Tài liệu kỹ thuật}
-% ================================================================
-
-Tài liệu kỹ thuật đầy đủ của dự án được xuất bản bằng Docusaurus. Các liên kết:
-
-\begin{itemize}
-  \item Documentation site: \url{https://tetrix-uit.github.io/tetrix}
-  \item Tài liệu artifact (requirement, specification, decision): \url{https://tetrix-uit.github.io/tetrix/artifact}
-  \item Báo cáo này ở dạng web: \url{https://tetrix-uit.github.io/tetrix/reports/final-project-report.vi/}
-\end{itemize}
-
-Site tổng hợp bốn nhóm tài liệu:
-
-\begin{table}[H]
-  \centering
-  \small
-  \caption{Các nhóm tài liệu kỹ thuật}
-  \begin{tabularx}{\textwidth}{P{3.6cm} Y}
-    \toprule
-    \textbf{Nhóm} & \textbf{Nội dung} \\
-    \midrule
-    Mô hình miền & Bounded context \texttt{context-tetrix-gameplay} và hai aggregate \texttt{agg-board} và \texttt{agg-falling-piece}. \\
-    Tài liệu theo giai đoạn & Requirements, specifications, decisions và implementation plan của từng change; kèm bản chụp theo version. \\
-    Wiki kỹ thuật & Kiến trúc nhiều repository, quy trình tài liệu theo SDLC và thiết kế Domain-Driven Design. \\
-    Báo cáo và nghiên cứu & Báo cáo cuối kỳ và các ghi chú nghiên cứu. \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-Nhóm áp dụng quy trình tài liệu theo SDLC: mỗi thay đổi đi qua năm pha
-Requirements, Specifications, Plan, Build và Version; mỗi pha kết thúc bằng một
-commit; repository là nguồn sự thật, và mỗi version là một bản chụp tài liệu đã
-được chấp nhận. Tài liệu nằm trong \texttt{docs/} và được xuất bản tự động qua
-GitHub Actions.
-
-Mã nguồn game nằm trong \texttt{apps/tetrix}, với kiểm thử trong
-\texttt{apps/tetrix/tests}. Các thành phần dùng chung nằm trong \texttt{libs/},
-dịch vụ trong \texttt{services/}, và kiểm thử đầu cuối trong \texttt{e2e/}.
-
-% ================================================================
-\section{Kỹ năng nhóm thu nhận được}
-% ================================================================
-
-Qua quá trình làm đồ án, nhóm thu nhận được các kỹ năng sau. Mỗi kỹ năng gắn với
-một tài liệu hoặc một công cụ cụ thể trong dự án, nên có thể kiểm chứng.
-
-\begin{table}[H]
-  \centering
-  \small
-  \caption{Kỹ năng nhóm thu nhận được}
-  \begin{tabularx}{\textwidth}{P{3.0cm} Y P{3.0cm}}
-    \toprule
-    \textbf{Nhóm kỹ năng} & \textbf{Kỹ năng cụ thể} & \textbf{Bằng chứng} \\
-    \midrule
-    Kỹ thuật lập trình & C++17, vòng lặp game, thuật toán va chạm và xoay, lập trình terminal (ANSI escape, POSIX termios), định thời \texttt{chrono}. & \path{apps/tetrix/main.cpp}, \texttt{spec-board}, \texttt{spec-rotate} \\
-    Thiết kế và kiến trúc & OOP đa hình cho bảy loại khối; Domain-Driven Design với bounded context, aggregate và invariant. & Lớp \texttt{Blocks}, \texttt{RotatingBlocks}, \texttt{SquareBlocks}; \path{docs/domain} \\
-    Kiểm thử & Viết unit test; xác định tiêu chí acceptance cho từng requirement; kiểm tra thủ công. & \path{tests/test_rotate.cpp}, các \texttt{req-*} \\
-    Quy trình phát triển & Quy trình SDLC năm pha; truy vết requirement, specification, ADR, task, mã nguồn và version. & \path{docs/artifact}, \texttt{change-initial} \\
-    Quản lý phiên bản và CI/CD & Git, branching, review pull request, conventional commits, pre-commit hook, GitHub Actions, môi trường Nix/devenv. & \path{.github/workflows}, \path{devenv.nix} \\
-    Tài liệu và viết kỹ thuật & Markdown, Docusaurus, LaTeX/XeLaTeX và vẽ hình TikZ. & \texttt{docs/}, báo cáo này \\
-    Quản lý dự án & Trello và Slack; phân rã task, ước lượng, review chéo và biểu quyết. & Hợp đồng nhóm \\
-    Gỡ lỗi và phân tích & Chẩn đoán lỗi đồng bộ Trello (trùng card do thiếu idempotency key); sửa lỗi build LaTeX. & \path{accepted-artifact-issues}, báo cáo này \\
-    Kỹ năng mềm & Phối hợp nhóm, nhận trách nhiệm theo pha, truy vết, giao tiếp và cam kết học thuật. & Hợp đồng nhóm \\
     \bottomrule
   \end{tabularx}
 \end{table}
