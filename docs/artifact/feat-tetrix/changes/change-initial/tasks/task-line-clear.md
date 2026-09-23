@@ -1,36 +1,40 @@
-# task-line-clear: Remove full rows and drop rows above
+# task-line-clear: Clear filled rows and shift upper rows down
 
-**Plan:** [Implementation plan](README.md)
-**Member:** SV2
-**Covers:** req-line-clear, spec-line-clear
-**Context:** context-tetrix-gameplay
-**Component:** apps/tetrix
-**Aggregate:** agg-board
-**Depends on:** task-falling
-**can-parallel:** no — same file; runs inside the lock step of the loop.
+**Plan:** [Implementation plan](implementation-plan.md)  
+**Member:** SV2  
+**Covers:** req-line-clear, spec-line-clear  
+**Context:** context-tetrix-gameplay  
+**Component:** apps/tetrix  
+**Aggregate:** agg-board  
+**Depends on:** task-falling  
+**can-parallel:** no — modifies same file; executed during loop's lock step.
+
+---
 
 ## Goal
 
-The game removes each full row after a lock and moves each row above down.
+Automatically detect and clear completed horizontal lines whenever a piece locks into place, then drop all higher rows to fill the gap.
+
+---
 
 ## Steps
 
-1. Implement `removeLine()` to return `int` per spec-line-clear: scan rows
-   H-2 to 1, remove each row with no empty inner cell, move rows above
-   down, restore side walls. This completes the lock-step stub hook left
-   by task-falling; no other task touches this call.
-2. Call `removeLine()` after each lock and before the next spawn.
-3. Pass the returned count to the speedup step.
+1. Develop `removeLine()` to output an `int` following `spec-line-clear`: check inner cells across rows H-2 down to 1, eliminate any row lacking empty spaces, shift upper rows downward, and maintain border walls. This fulfills the lock-step hook introduced in `task-falling`; no other tasks modify this function call.
+2. Execute `removeLine()` right after a block locks and prior to spawning a new piece.
+3. Forward the cleared row count to the speed increment handler.
+
+---
 
 ## Check
 
-Rebuild with `g++ -std=c++17 -o tetrix main.cpp` in `apps/tetrix`.
-Fill one row and lock a block. The full row disappears and rows above drop
+Compile using `g++ -std=c++17 -o tetrix main.cpp` inside `apps/tetrix`. Complete any horizontal row and trigger a block lock. Verify that the completed line disappears and the blocks above drop down.
+
+---
 
 ## Acceptance criteria
 
-- Only rows with no empty inner cell are removed.
-- Rows above move down by the count of removed rows; freed top rows are empty with side walls.
-- Border cells keep `#` after the move.
-- `Full row cleared` fires with `{ clearedRows }` when the count is above 0.
-- A count of 0 changes nothing in the well.
+- Only rows that have zero empty inner cells get cleared.
+- Upper rows shift down corresponding to the number of cleared lines; newly cleared top rows are reset to empty with side walls intact.
+- Boundary cells strictly retain `#` after rows shift.
+- The log `Full row cleared` triggers with `{ clearedRows }` whenever the count exceeds 0.
+- A cleared count of 0 makes no modifications to the playing field.
