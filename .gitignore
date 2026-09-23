@@ -5,3 +5,10 @@ devenv.local.yaml
 
 # direnv
 .direnv
+
+# Tetrix build output
+apps/tetrix/tetrix
+apps/tetrix/tetrix.exe
+apps/tetrix/run.log
+apps/tetrix/test_rotate
+apps/tetrix/test_rotate.exe
