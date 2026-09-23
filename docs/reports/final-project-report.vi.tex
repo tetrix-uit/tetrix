@@ -111,6 +111,35 @@
     \draw[line width=1.4pt] (0.3, -0.5) to[out=-10, in=190] (4.3, -0.4) to[out=10, in=-140] (4.8, -0.1);
     \fill (4.95, -0.08) circle (1.3pt);
   \end{tikzpicture}%
+
+  \newcommand{\signatureMinh}{%
+\begin{tikzpicture}[scale=0.8]
+    % Chữ M cách điệu sắc nét
+    \draw[line width=2pt, cap=round, join=round] 
+        (0,0) .. controls (0.2,2.5) and (0.8,3) .. (1.2,3) % Nét vọt lên
+        -- (1.8,0.5) % Nét chéo xuống
+        -- (2.4,2.8) % Nét vọt lên thứ 2
+        .. controls (2.8,1.2) and (3.0,0.8) .. (3.5,0.8); % Nét chuyển sang inh
+    
+    % Phần "inh" liền mạch dạng sóng
+    \draw[line width=1.2pt, cap=round] 
+        (3.5,0.8) .. controls (3.8,1.2) and (4.0,0.6) .. (4.3,0.8) % i
+        .. controls (4.6,1.2) and (4.8,0.6) .. (5.2,0.8) % n
+        .. controls (5.4,2.0) and (5.8,2.2) .. (5.8,0.6) % h (vòng lên)
+        .. controls (6.0,0.8) and (6.3,0.9) .. (6.6,1.1); % Nét vuốt cuối
+        
+    % Dấu chấm chữ i cách điệu (dạng vệt)
+    \fill (4.0,1.5) circle (2pt);
+
+    % Đường gạch chân hướng lên (Phong thủy thăng tiến)
+    \draw[line width=1.8pt, cap=round] 
+        (0.8,-0.2) .. controls (3.0,-0.4) and (5.5,0.1) .. (7.0,0.8);
+\end{tikzpicture}
+
+\vspace{1cm}
+\end{tikzpicture}%
+
+\vspace{1cm}
 }
 
 \begin{document}
@@ -274,7 +303,7 @@ Các thành viên xác nhận đã đọc, thống nhất và cam kết thực h
     Trần Minh Hiếu & Đồng ý & \signatureHieu & 10/09/2026 \\
     Nguyễn Trọng Khương & Đồng ý & \signatureKhuong & 10/09/2026 \\
     Trần Minh Lợi & Đồng ý & & 10/09/2026 \\
-    Dương Quang Minh & Đồng ý & & 10/09/2026 \\
+    Dương Quang Minh & Đồng ý &\signatureMinh & 10/09/2026 \\
     Phạm Minh Tuấn & Đồng ý & \signatureTuan & 10/09/2026 \\
     \bottomrule
   \end{tabularx}
