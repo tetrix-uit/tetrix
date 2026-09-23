@@ -1,11 +1,17 @@
 # Feature: Tetrix falling-block game
 
-**Current version:** none
+**Current version:** 1.0.0
 
 ## Summary
 
 This feature gives players the Tetrix falling-block game in apps/tetrix. Players move and rotate
 falling blocks, clear full rows, and play at a higher speed after each cleared line.
+
+## Current artifacts
+
+- [Requirements](versions/1.0.0/requirements/README.md)
+- [Specifications](versions/1.0.0/specifications/README.md)
+- [Decisions](versions/1.0.0/decisions/)
 
 ## Versions
 
@@ -16,4 +22,4 @@ falling blocks, clear full rows, and play at a higher speed after each cleared l
 ## Artifacts
 
 - [Changes](changes/)
-- [Versions](versions/) (present after the first version)
+- [Versions](versions/)
